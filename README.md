@@ -1,5 +1,6 @@
 # Python-project
-ส่งงาน project วิชา (Fundamental Programming Concepts) ปี 1 ภาคต้น
+ส่งงาน project วิชา (Fundamental Programming Concepts) ปี 1 ภาคต้น <br>
+มหาวิทยาลัยเกษตรศาสตร์วิทยาเขตศรีราชา
 
 รายชื่อสมาชิกในกลุ่ม
 - นาย วรินทร์ สายปัญญา รหัสนิสิต 6630250435
