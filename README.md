@@ -10,12 +10,9 @@
 
 ## โปรแกรมร้านค้าขายอาหาร
 <tr>
-ติดตั้งโปรเจค:
-<code>git clone https://github.com/VarinCode/Python-project.git</code>
-  
-run program
-<code>cd Python-project</code> และ
-<code>python main.py</code>
+ติดตั้งโปรเจค: <code>git clone https://github.com/VarinCode/Python-project.git</code><br>
+ติดตั้ง library: <code>pip install prettytable</code><br>
+run program <code>cd Python-project</code> และ <code>python main.py</code>
 
 <h2>ฟีเจอร์ของโปรแกรม</h2>
 <ul>
