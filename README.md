@@ -1,7 +1,7 @@
 # Python-project
 ส่งงาน project วิชา (Fundamental Programming Concepts) ปี 1 ภาคต้น <br>
 
-<img  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8LBwXbMtf9ydtgPQ6KaMADZEpFc7jHQ8f5A&usqp=CAU" alt="" width="120" height="120" align="center">
+<img  src="https://upload.wikimedia.org/wikipedia/th/thumb/5/51/Logo_ku_th.svg/1200px-Logo_ku_th.svg.png" align="center" width="150" height="150">
 <h1><b>มหาวิทยาลัยเกษตรศาสตร์วิทยาเขตศรีราชา</b></h1>
 <hr>
 
