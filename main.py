@@ -1,9 +1,11 @@
 from random import randint , random , shuffle , choice
 from math import floor
 from datetime import datetime as dt
-from menu import list_menu # นำเข้าข้อมูลรายการเมนู
+# นำเข้าข้อมูลรายการเมนู
+from menu import list_menu 
 
-from prettytable import PrettyTable # pip install prettytable
+# pip install prettytable
+from prettytable import PrettyTable 
 
 # ? สร้างตาราง
 table = PrettyTable() # ตารางอาหาร
@@ -15,7 +17,7 @@ months = ("มกราคม", "กุมภาพันธ์", "มีนา�
 # ? วันเวลาปัจจุบัน
 now = dt.now()
 time = now.time()
-today = now.date().strftime('%d/%m/%Y')
+today = now.date().strftime('%d/%m/%Y') 
 
 # ? function สวัสดีในแต่ละช่วงเวลา
 def greeting(h):
@@ -34,7 +36,7 @@ def createID(length=7):
     id_li = []  # เก็บตัวเลขที่สุ่มมาได้
     randomNum = lambda: str(floor(id({}) * randint(1, 10) * random()))  # สุ่มเลขส่งคืนกลับมาเป็น string ก้อนใหญ่
     for i in range(length):
-        ran = choice(randomNum())
+        ran = choice(randomNum()) #สุ่ม 1 เลขของผลลัพธ์ 
         id_li.append(ran)  # เก็บตัวเลขเข้าใน list
     _id = "".join(id_li)  # รวม element ใน list ให้เป็นข้อความ
     _id = int(_id)
@@ -44,11 +46,12 @@ def createID(length=7):
 # ? เมนูอาหาร
 menu = list_menu
 
-# ? function หั่นเมนู 
+# ? function หั่นเมนูอาหารมีเยอะเกิน
 # def listSlicing(length = 100):
 #     global menu
+#     shuffle(menu)
 #     menu = menu[:length]
-# listSlicing(50)
+# listSlicing(20)
 shuffle(menu) # สุ่มรายการอาหาร
 
 # สร้างเลข id แบบสุ่ม
@@ -63,20 +66,21 @@ idLi = []
 def setElements():
     global foodLi
     global idLi
-    def getValue(li , key): # function ย่อยจะวน loop ดึง value ที่อยู่ใน dict ของ menu
+    # function getValue จะวน loop ดึง value ที่อยู่ใน dict ของ menu
+    def getValue(li , key): 
         li = [] # ล้างค่า elements เก่าทุกครั้ง
         for item in menu: li.append(item[key]) # เพิ่ม element ใหม่ให้ parameter
         li = (*li,) # แปลง list เป็น tuple
         return li
     # เก็บค่า tuple ให้ 2 ตัวแปร
-    foodLi = getValue(li = foodLi , key="name") 
-    idLi = getValue(li = idLi , key="id")
+    foodLi = getValue(li= foodLi , key="name") 
+    idLi = getValue(li= idLi , key="id")
 setElements()
 
 # ? ค้นหา dictionary ที่อยู่ใน list โดยใช้เลข id ส่งกลับเป็น dictionary
 # searchId = lambda _id: menu[idLi.index(_id)] if int(_id) in idLi else None
 
-# ? ค้นหา dictionary ที่อยู่ใน foodLi , idLi ส่งกลับเป็นเลข index
+# ? function ในการค้นหา dictionary ที่อยู่ใน foodLi , idLi ส่งกลับเป็นเลข index
 def searchMenu(param):
     try:
         if param == 'm' or param == 'menu': 
@@ -120,10 +124,10 @@ def notify(text): #เพื่อออกจากการลบเมนู
 
 # รายการที่ผู้ใช้สั่งเมนูอาหารจะเก็บไว้ในตัวแปร order
 order = {}  # key คือ ชื่ออาหาร , value คือ จำนวนสินค้าที่สั่ง
-_sum = 0 # ยอดรวมจำนวนเงินทั้งหมด
-totalMoney = 0
-allOrders = []
-orderNumber = 0
+_sum = 0 # ยอดเงินรวมจำนวนเงินทั้งหมดในแต่ละ order
+totalMoney = 0 # ยอดเงินรวมทั้งหมดใน 1วัน
+allOrders = [] # order ทั้งหมดจะเก็บไว้ใน list 
+orderNumber = 0 # หมายเลขจำนวนครั้งในการสั่ง order
 
 # ? function สั่งซื้อรายการสินค้า
 def placeOrder():  
@@ -135,13 +139,13 @@ def placeOrder():
     while True:
         foodName = input("ชื่ออาหาร : ")
         foodName = foodName.lower().strip()
-        isEnd = foodName == "end"
+        isEnd = foodName == "end" or foodName == "e"
         if foodName == 'm' or foodName == 'menu': 
             showMenu()
         elif foodName in foodLi:
             while True:
                 try:
-                    amount = int(input("จำนวน : "))
+                    amount = int(input("จำนวน : ")) # จำนวนอาหาร
                     if (amount <= 0) and not (foodName.isdigit()):
                         raise UserWarning("❌ จำนวนอาหารไม่ถูกต้องโปรดใส่จำนวนใหม่อีกครั้ง!")
                 except ValueError:
@@ -150,18 +154,18 @@ def placeOrder():
                     print(err)
                 else:
                     break
-            if foodName not in order:
-                order[foodName] = amount
-            elif foodName in order:
+            if foodName not in order: # ถ้าเป็นชื่ออาหารที่ยังไม่มี key อยู่ใน dict
+                order[foodName] = amount # เก็บจำนวนอาหาร
+            elif foodName in order: # ถ้ามีชื่อ key ซ้ำเป็นอยู่แล้วให้เพิ่มจำนวนอาหารเท่ากับของใหม่ 
                 order[foodName] += amount
-        elif (foodName not in foodLi) and (not isEnd):
+        elif (foodName not in foodLi) and (not isEnd): # ไม่มีชื่ออาหารอยู่ในเมนู
             raise UserWarning(f'❌ ไม่มีชื่อ "{foodName}" อยู่ในเมนูอาหาร!')
             
         # ! เมื่อหยุดการทำงานของ function placeOrder
         if isEnd:
-            price_li = []
-            allOrders.append(order.copy())
-            showOrder = order.copy()
+            price_li = [] # เก็บราคาอาหาร
+            allOrders.append(order.copy()) # เก็บ order
+            showOrder = order.copy() # dict ที่จะแสดงใน print
             for item in order:  # loop รายชื่ออาหารที่ทำการสั่งหมด
                 idx = foodLi.index(item)  # หาเลข index อ้างอิงตามชื่อสินค้าที่สั่ง
                 order[item] = (order[item] * menu[idx]["price"])  # จำนวนสินค้า คูณ กับราคาสินค้าที่อยู่ในเมนู
