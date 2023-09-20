@@ -13,9 +13,16 @@
 
 ## โปรแกรมร้านค้าขายอาหาร
 <tr>
-ติดตั้งโปรเจค: <code>git clone https://github.com/VarinCode/Python-project.git</code><br>
-ติดตั้ง library: <code>pip install prettytable</code><br>
-run program <code>cd Python-project</code> และ <code>python main.py</code>
+<div>
+  <p>ติดตั้งโปรเจค</p>
+  1. ดาวโหลด์: <code python>git clone https://github.com/VarinCode/Python-project.git</code><br>
+  2. เข้าถึง directory ของ project <code>cd Python-project</code><br>
+  3. ติดตั้ง virtual environment <code>py -m venv .venv</code><br>
+  4. เปิดใช้งาน venv<code>.venv\Scripts\activate</code><br>
+  5. ติดตั้ง library ที่อยู่ใน project <code>pip install -r requirement.txt</code><br>
+  6. run program <code>python main.py</code><br>
+  7. ปิดใช้งาน venv<code>deactivate</code><br>
+</div>
 
 <h2>ฟีเจอร์ของโปรแกรม</h2>
 <ul>
