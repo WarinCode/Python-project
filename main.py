@@ -52,7 +52,7 @@ class Program:
     def isKeyword(self, param):
         """
 
-        :param param: 
+        :param param:
 
         """
         return param in self.KEYWORDS
@@ -158,8 +158,8 @@ class Program:
         def getValue(setInitialValue, keyName):
             """
 
-            :param setInitialValue: 
-            :param keyName: 
+            :param setInitialValue:
+            :param keyName:
 
             """
             setInitialValue.clear()  # ล้างค่า elements เก่าทุกครั้ง
@@ -177,7 +177,7 @@ class Program:
     def searchMenu(self, param):
         """
 
-        :param param: 
+        :param param:
 
         """
         try:
@@ -225,7 +225,7 @@ class Program:
     def notify(self, text):  # แสดงข้อความเมื่อเรียกคำสั่งที่พิมพ์ไป
         """
 
-        :param text: 
+        :param text:
 
         """
         print(
@@ -381,7 +381,7 @@ class Program:
         def deleteElements(param):
             """
 
-            :param param: 
+            :param param:
 
             """
             findIndex = self.searchMenu(param)  # ส่งกลับเป็นเลข index
@@ -488,8 +488,8 @@ class Program:
     def conclusion(self, total, orders):
         """
 
-        :param total: 
-        :param orders: 
+        :param total:
+        :param orders:
 
         """
         quantity = 0
