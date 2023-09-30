@@ -10,6 +10,7 @@ from menu import list_menu
 
 
 class Program:
+    """ """
     # * ตัวแปรไว้เป็นค่าอ้างอิงเลข index ในการหาอาหารสินค้าในรายการเมนู
     foodList = []
     idList = []
@@ -47,6 +48,11 @@ class Program:
     )
 
     def isKeyword(self, param):
+        """
+
+        :param param: 
+
+        """
         return param in self.KEYWORDS
 
     # ? ตั้งค่าโปรแกรมเริ่มต้น
@@ -81,6 +87,7 @@ class Program:
 
     # ? function สวัสดีในแต่ละช่วงเวลา
     def greeting(self):
+        """ """
         # * วันที่
         days = ("จันทร์", "อังคาร", "พุธ", "พฤหัสบดี", "ศุกร์", "เสาร์", "อาทิตย์")
         months = (
@@ -117,10 +124,16 @@ class Program:
 
     # ? function สร้างเลข id
     def createID(self, length=4):
+        """
+
+        :param length:  (Default value = 4)
+
+        """
         numbers = []  # เก็บตัวเลขที่สุ่มมาได้
 
         # สุ่มเลขส่งคืนกลับมาเป็น string ก้อนใหญ่
         def rand():
+            """ """
             return str(floor(id({}) * randint(1, 100)))
 
         while True:
@@ -138,8 +151,15 @@ class Program:
 
     # ? function ในการเปลี่ยนค่าข้อมูลใน foodLi , idLi เมื่อในรายการในเมนู (menu) มีการเปลี่ยนแลง ตัวแปรทั้ง 2 ตัวนี้จะเปลี่ยนตามด้วย
     def setElements(self):
+        """ """
         # function getValue จะวน loop ดึง value ที่อยู่ใน dict ของ menu
         def getValue(setInitialValue, keyName):
+            """
+
+            :param setInitialValue: 
+            :param keyName: 
+
+            """
             setInitialValue.clear()  # ล้างค่า elements เก่าทุกครั้ง
             for item in self.menu:
                 # เพิ่ม element ใหม่ให้ parameter
@@ -153,6 +173,11 @@ class Program:
 
     # ? function ในการค้นหา dictionary ที่อยู่ใน foodLi , idLi ส่งกลับเป็นเลข index
     def searchMenu(self, param):
+        """
+
+        :param param: 
+
+        """
         try:
             if param == "m" or param == "menu":
                 pass
@@ -174,6 +199,7 @@ class Program:
 
     # ? function แสดงเมนูอาหาร
     def showMenu(self):
+        """ """
         # documentation: https://pypi.org/project/prettytable/
         self.menuTable.clear()  # reset ข้อมูลตารางใหม่ทุกครั้งเมื่อเรียกใช้ function
         self.menuTable.field_names = ("ลำดับ", "อาหาร", "ราคา(บาท)", "รหัสสินค้า")
@@ -190,16 +216,23 @@ class Program:
 
     # ? function แสดงคำสั่ง
     def showCommands(self):
+        """ """
         print("\nเลือกพิมพ์คำสั่งเหล่านี้เพื่อดำเนินการ".center(50))
         print(self.commandsTable, "\n")
 
     def notify(self, text):  # แสดงข้อความเมื่อเรียกคำสั่งที่พิมพ์ไป
+        """
+
+        :param text: 
+
+        """
         print(
             f'❔ พิมพ์ตัว "m" หรือ "menu เพื่อแสดงเมนูอาหาร\n❔ พิมพ์ตัว "e" หรือ "end" {text}'
         )
 
     # ? function สั่งซื้อรายการสินค้า
     def placeOrder(self):
+        """ """
         showOrder = {}
         self.notify("เพื่อออกจากการสั่งซื้อ")
         while self.programStatus["isInvokeMethods"]:
@@ -273,6 +306,7 @@ class Program:
 
     # ? function เพิ่มรายการสินค้า
     def addItems(self):
+        """ """
         self.notify("เพิ่อออกจาการเพิ่มสินค้า")
         while True:
             try:
@@ -339,9 +373,15 @@ class Program:
 
     # ? function ลบรายการสินค้า
     def removeItems(self):
+        """ """
         self.notify("เพื่อออกจากการลบเมนู")
 
         def deleteElements(param):
+            """
+
+            :param param: 
+
+            """
             findIndex = self.searchMenu(param)  # ส่งกลับเป็นเลข index
             del self.menu[findIndex]
             self.setElements()
@@ -399,6 +439,7 @@ class Program:
 
     # ? function แก้ไขรายการสินค้า
     def editItems(self):
+        """ """
         self.notify("เพิ่อออกจาการแก้ไข")
         while True:
             try:
@@ -443,6 +484,12 @@ class Program:
 
     # ? function สรุปจำนวนเงินและการสั่งซื้อสินค้า
     def conclusion(self, total, orders):
+        """
+
+        :param total: 
+        :param orders: 
+
+        """
         quantity = 0
         for i in range(len(orders)):
             element = orders[i]  # เข้าถึง dict แต่ละอันใน list
@@ -452,6 +499,7 @@ class Program:
 
     # ? function ในการลบเมนูสินค้า
     def deleteMenu(self):
+        """ """
         if (
             input(
                 'คุณแน่ใจว่าต้องการลบสินค้าทั้งหมดถ้าต้องการให้พิมพ์ "y" แต่โปรดรู้ไว้ข้อมูลสินค้าจะถูกลบถาวรและไม่สามารถกู้คืนได้ : '
@@ -465,6 +513,7 @@ class Program:
 
     # ? function ออกจากโปรแกรม
     def exitProgram(self):
+        """ """
         self.programStatus["isWorking"] = False
         # * ถ้ามีการสั่งอาหารให้แสดงรายการสรุปสินค้าที่ซื้อไปภายใน 1 วัน ถ้าไม่ได้สั่งซื้อไม่ต้องแสดง
         self.allOrders.__len__() != 0 and print(
@@ -474,10 +523,12 @@ class Program:
         self.programStatus["programeIsRunning"] = False
 
     def exitMethods(self):
+        """ """
         pass
 
     # ? function ในการดำเนินการหลักของโปรแกรม
     def PROGRESS(self):
+        """ """
         while self.programStatus["programeIsRunning"]:
             self.programStatus["isWorking"] = True
             try:
