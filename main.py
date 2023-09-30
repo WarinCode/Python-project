@@ -1,12 +1,12 @@
-from random import randint, shuffle, choice
-from math import floor
 from datetime import datetime as dt
-
-# นำเข้าข้อมูลรายการเมนู
-from menu import list_menu
+from math import floor
+from random import choice, randint, shuffle
 
 # pip install prettytable
 from prettytable import PrettyTable
+
+# นำเข้าข้อมูลรายการเมนู
+from menu import list_menu
 
 
 class Program:
