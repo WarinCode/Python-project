@@ -1,3 +1,4 @@
+from random import shuffle
 # ชื่อรายการอาหารทั้งหมด
 # ข้างใน list มี dictionary ทั้งหมด 100 ชิ้น โดยเลข index อยู่ที่ 0 ถึง 99
 # ข้างใน dictionary ประกอบด้วย properties 3 อันคือ
@@ -506,3 +507,13 @@ list_menu = [
         "id": 1722978
     }
 ]
+
+shuffle(list_menu)
+nameList = []
+priceList = []
+
+def getValue():
+    for item in list_menu:
+        nameList.append(item["name"])
+        priceList.append(item["price"])
+getValue()

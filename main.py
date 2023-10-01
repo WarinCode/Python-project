@@ -1,6 +1,6 @@
 from abc import abstractmethod 
 from datetime import datetime as dt
-from random import randint , random , shuffle , choice
+from random import randint , random , choice
 from math import floor
 # นำเข้า module (ข้อมูลเมนู)
 from menu import list_menu 
@@ -18,7 +18,6 @@ from typing import List , Dict , Union , Any
 # คำสั่งรันโปรแกรม:                   py main.py หรือ py "C:\Users\ชื่อผู้ใช้งานคอมพิวเตอร์\Desktop\Python-project\main.py"
 # ปิดใช้งาน venv:                   deactivate
 
-#? abstract methods ที่ประกาศไว้ถือเป็น private methods ทั้งหมด
 class Configuration: #? กำหนดโครงสร้างของ Program
     #? กำหนด methods ที่สำคัญดังนี้
     #? abstract methods ทั้งหมดที่ประกาศไว้ถือว่าเป็น private methods ทั้งหมด
@@ -103,8 +102,6 @@ class Program(Configuration):
         # สร้างเลข id(รหัสสินค้า)
         for item in self.__menu__: 
             item["id"] = self.createID()
-        # สุ่ม element ให้กระจัดกระจายอยู่ใน list
-        shuffle(self.__menu__)
         # เพิ่มคำสั่งแต่ละ columns
         self.__commandsTable__.add_column('คำสั่ง', self.__KEYWORDS__[:8]) # index ที่ 0 - 7
         self.__commandsTable__.add_column('ชื่อคำสั่งเต็ม', self.__KEYWORDS__[8:]) # index ที่ 8 ขึ้นไป
@@ -479,5 +476,5 @@ class Program(Configuration):
                 self.__programStatus__["isWorking"] and print('โปรดเลือกพิมพ์คำสั่ง')
 
 # สร้าง instance(object) เพื่อนำไปใช้งาน
-program = Program(menu=list_menu[:30] , table=PrettyTable)
+program = Program(menu=list_menu[:20] , table=PrettyTable)
 program.EXECUTE() # เรียกใช้ method เพื่อดำเนินการทำงานหลักของ program
