@@ -18,6 +18,7 @@ from typing import List , Dict , Union , Any
 # คำสั่งรันโปรแกรม:                   py main.py หรือ py "C:\Users\ชื่อผู้ใช้งานคอมพิวเตอร์\Desktop\Python-project\main.py"
 # ปิดใช้งาน venv:                   deactivate
 
+# The Configuration class defines the structure and abstract methods for a program.
 class Configuration: #? กำหนดโครงสร้างของ Program
     #? กำหนด methods ที่สำคัญดังนี้
     #? abstract methods และ abstract property ทั้งหมดที่ประกาศไว้ถือว่าเป็น private methods ทั้งหมด
@@ -58,6 +59,8 @@ class Configuration: #? กำหนดโครงสร้างของ Prog
     def __exitProgram__(self) -> None:
         pass
 
+
+# The class Program inherits from the Configuration class.
 class Program(Configuration):
     #? กำหนด attributes
     
