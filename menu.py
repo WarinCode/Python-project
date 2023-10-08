@@ -1,6 +1,6 @@
 from random import shuffle
 # ชื่อรายการอาหารทั้งหมด
-# ข้างใน list มี dictionary ทั้งหมด 100 ชิ้น โดยเลข index อยู่ที่ 0 ถึง 99
+# ข้างใน list มี dictionary ทั้งหมด 100 อัน โดยเลข index อยู่ที่ 0 ถึง 99
 # ข้างใน dictionary ประกอบด้วย properties 3 อันคือ
 # name: เก็บชื่ออาหาร
 # price: เก็บราคา
