@@ -1,5 +1,6 @@
 from abc import abstractmethod 
-from datetime import datetime as dt
+from datetime import datetime as dt 
+from time import sleep
 from random import randint , random , choice
 from math import floor
 # นำเข้า module (ข้อมูลเมนู)
@@ -9,12 +10,13 @@ from data import userData , addUser
 # pip install prettytable
 from prettytable import PrettyTable 
 # pip install typing
-from typing import List , Dict , Union , Any , Tuple
+from typing import List , Dict , Union , Any , Tuple 
 # pip install ascii-magic
 from ascii_magic import AsciiArt 
 from statistics import mean , mode
 from sys import exit
 from colorama import init , Fore , Back , Style
+
 init() # ติตดตั้งการใช้สีในข้อความ
 
 # |ขั้นตอนการใช้งาน|                 |คำสั่ง|
@@ -101,19 +103,12 @@ class Register: #? องค์ประกอบใน class: ระบบ logi
                         if validateUser["nameOrEmail"] == user["name"]:
                             #ถ้ามีในไฟล์เก็บข้อมูลผู้ใช้งานให้ค่าสถานะเป็น True
                             isCorrect["name"] = True
-                        else:
-                            # เมื่อได้ค่าสถานะ True แล้วไม่ต้องเปลี่ยนค่า False , ถ้ายังไม่เจอก็ให้เป็น False
-                            if not isCorrect["name"]: isCorrect["name"] = False
                         # ตรวจสอบ อีเมล
                         if validateUser["nameOrEmail"] == user["email"]:
                             isCorrect["email"] = True
-                        else:
-                            if not isCorrect["email"]: isCorrect["email"] = False
                         # ตรวจสอบ รหัสผ่าน
                         if validateUser["password"] == user["password"]:
                             isCorrect["password"] = True
-                        else:
-                            if not isCorrect["password"]: isCorrect["password"] = False
                         # เช็คค่า
                         # print(validateUser["nameOrEmail"] , '->' , user["name"])
                         # print(validateUser["nameOrEmail"] , '->' , user["email"])
@@ -166,6 +161,8 @@ class Register: #? องค์ประกอบใน class: ระบบ logi
                     self.__createAccount__() # เรียกใช้ method สร้างบัญชีผู้ใช้งาน
                     break # ออกจาก loop นี้
         else: # หลังออกจาก loop
+            print(Fore.CYAN + 'กำลัง login เข้าสู่ระบบ กรุณารอสักครู่ ...' + Fore.RESET)
+            sleep(3)
             print(Fore.LIGHTGREEN_EX + '✓ login สำเร็จ\n' + Fore.RESET)
         # ส่งข้อมูลผู้ใช้งาน
         return self.__saveUserData__
@@ -176,7 +173,7 @@ class Register: #? องค์ประกอบใน class: ระบบ logi
         #? function ในการเช็คค่าว่าง  True เป็นค่าว่างเปล่า , False ไม่เป็นค่าว่างเปล่า
         isEmpty = lambda var: var == "" or var.__len__() == 0
         
-        print(Fore.LIGHTWHITE_EX + '\nสมัครบัญชีผู้ใช้งานใหม่' + Fore.RESET)
+        print(Fore.BLUE + '\nสมัครบัญชีผู้ใช้งานใหม่' + Fore.RESET)
         newUser = {
             "name": None,
             "password": None,
@@ -242,9 +239,9 @@ class Register: #? องค์ประกอบใน class: ระบบ logi
                 print(f'💬 โปรดเลือกตำแหน่งงานในร้านอาหารของที่คุณทำงานอยู่:' , end=" ")
                 for key in self.POSITIONS:
                     allPositions.extend(self.POSITIONS[key])
-                    print(" , ".join(self.POSITIONS[key]) , end='')
+                print(" , ".join(allPositions))
                 try:
-                    selectedPosition = input("\nตำแหน่งงานหรือหน้าที่ของคุณคือ : ").strip()
+                    selectedPosition = input("ตำแหน่งงานหรือหน้าที่ของคุณคือ : ").strip()
                     if isEmpty(selectedPosition):
                         raise UserWarning('❌ คุณไม่ได้ใส่ตำแหน่งงานของคุณโปรดกรอกตำแหน่งงานของคุณ')
                     elif selectedPosition not in allPositions:
@@ -254,18 +251,20 @@ class Register: #? องค์ประกอบใน class: ระบบ logi
                 except UserWarning as err:
                     print(Fore.LIGHTMAGENTA_EX + err.__str__() + Fore.RESET)
         else: # เมื่อออกจาก while loop เสร็จ 
-            print(Fore.LIGHTGREEN_EX + '✓ สมัครบัญชีผู้ใช้งานใหม่นสำเร็จโปรด Login เพื่อเข้าใช้งานโปรแกรม' + Fore.RESET)
+            print(Fore.CYAN + 'กำลังสร้างบัญชีผู้ใช้งาน กรุณารอสักครู่ ...' + Fore.RESET)
+            sleep(3)
+            print(Fore.LIGHTGREEN_EX + '✓ สร้างบัญชีผู้ใช้งานสำเร็จโปรด Login เพื่อเข้าใช้งานโปรแกรม' + Fore.RESET)
             print(Fore.BLUE + '🔹 กลับไปที่หน้า Login' + Fore.RESET)
             addUser(newUser) # เพื่มข้อมูลผู้ใช้งานคนใหม่
             return self.__login__() # เรียกใช้ method login
     
     #? method บัญชีผู้ใช้งานออกจากระบบ
-    def __logout__(self) -> bool:
+    def __logout__(self , callBackFunction: Any) -> bool:
         status = False # สถานะออกจากบัญชี True ออกจากบัญชี , False ไม่ได้ออกจากบัญชี
         # เมื่อตอบ y ให้เอาข้อมูลผู้ใช้งานออกจากโปรแกรม 
         if input('คุณต้องการออกจากบัญชีผู้ใช้งานนี้ (y/n) : ').lower().strip() == "y":
+            callBackFunction(typeOfLog=self.INFO , text=f"{self.__user__['name']} ได้ออกจากการใช้งานบัญชี {self.__user__['email']} แล้ว")
             status = True
-            self.__log__(text=f"{self.__user__['name']} ได้ออกจากการใช้งานบัญชี {self.__user__['email']} แล้ว")
             self.__setUser__(isLogout=True) # set ข้อมูลผู้ใช้งานโปรแกรมเป็นค่าเริ่มต้นคือค่าว่างเปล่า
             print(Back.BLUE + 'คุณออกจากบัญชีนี้เรียบร้อย' + Back.RESET)
         else:
@@ -273,7 +272,7 @@ class Register: #? องค์ประกอบใน class: ระบบ logi
         return status
 
     #? method ในการให้ข้อมูลผู้ใช้งาน 
-    def __getUser__(self) -> Dict[str , str | Union[str , Dict[str , str]]]:
+    def __getUser__(self , callBackFunction) -> Dict[str , str | Union[str , Dict[str , str]]]:
         user = None
         # loop เรื่อยๆจนกว่าจะได้ข้อมูลผู้ใช้งาน
         while not bool(user):
@@ -283,9 +282,11 @@ class Register: #? องค์ประกอบใน class: ระบบ logi
                 # เลือก login
                 if selected == 1:
                     user = self.__login__()
+                    callBackFunction(typeOfLog=self.INFO ,text=f'{user["name"]} ได้ login เข้าใช้งาน')
                 # เลือกสมัครสมาชิกก่อนแล้วจะไปที่หน้า login
                 elif selected == 2:
                     user = self.__createAccount__() # sign up
+                    callBackFunction(typeOfLog=self.INFO ,text=f'มีการสร้างบัญชีผู้ใช้งาน {user["name"]}')
                 # ออกจากโปรแกรม
                 elif selected == 3:
                     print('ปิดโปรแกรม')
@@ -314,8 +315,41 @@ class Register: #? องค์ประกอบใน class: ระบบ logi
         elif user != None:
             for key in user: # loop แล้วดึง key จาก property user ออกมา
                 self.__user__[key] = user[key] # ให้ property ใน attribute user มีค่าเป็นข้อมูลของผู้ใช้งานที่ส่งมา
+
+class Date:
+    # วัน และ เดือน
+    days = ("จันทร์", "อังคาร", "พุธ", "พฤหัสบดี", "ศุกร์", "เสาร์" , "อาทิตย์")
+    months = ("มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม")
     
-class Configuration(Register): #? องค์ประกอบใน class: กำหนดโครงสร้างหลักๆของ class Program และ สิทธิ์การใช้งาน
+    #? method สวัสดีผู้ใช้งานในแต่ละช่วงเวลา
+    def greeting(self , h: int) -> None:
+        hi = ''
+        # Ref: https://www.aepenglishschool.com/content/5024/english-time
+        if h >= 5 and h <= 11: hi = 'สวัสดีตอนเช้า'
+        elif h >= 12  and h <= 17: hi = 'สวัสดีตอนบ่าย'
+        elif h >= 18 and h <= 21: hi = 'สวัสดีตอนเย็น'
+        elif h >= 22 and h >= 4: hi = 'สวัสดีตอนกลางคืน'
+        # แสดงข้อความ
+        if self.__DEFAULTSETTING__["EnableRegisterSystem"]:
+            print(f'🙏 {hi} คุณ {self.__user__["name"]} วันนี้ วัน{self.days[self.now.date().weekday()]} ที่ {self.now.date().day} เดือน {self.months[self.now.date().month - 1]} ปี พ.ศ. {self.year} ({self.today})')
+        else:
+            print(f'🙏 {hi} วันนี้ วัน{self.days[self.now.date().weekday()]} ที่ {self.now.date().day} เดือน {self.months[self.now.date().month - 1]} ปี พ.ศ. {self.year} ({self.today})')
+        print(f"🕓 เวลา {f'0{self.time.hour}' if self.time.hour < 10 else self.time.hour}:{f'0{self.time.minute}' if self.time.minute < 10 else self.time.minute}:{f'0{self.time.second}' if self.time.second < 10 else self.time.second}")
+        print('โปรแกรมพร้อมให้บริการ 🙂')
+        
+    #? method ในการรับค่าเวลามาแสดงผล 
+    def getTime(self , realTime: bool = False) -> str:
+        # สร้าง attributes และ อัปเดตค่าของมัน 
+        self.now = dt.now()
+        self.time = self.now.time()
+        self.year = self.now.date().year + 543
+        self.today = self.now.date().strftime('%d/%m/%Y') 
+        if realTime: # ใช้เวลาจริงในการเก็บ log
+            return f"{self.time}"[:11 + 1] # ตัด str ให้เหลือข้อความ 11 ตัว
+        else:
+            return f"{self.time.hour}:{f'0{self.time.minute}' if self.time.minute < 10 else self.time.minute}:{f'0{self.time.second}' if self.time.second < 10 else self.time.second}"
+    
+class Configuration(Register , Date): #? องค์ประกอบใน class: กำหนดโครงสร้างหลักๆของ class Program และ สิทธิ์การใช้งาน
     
     #* ตำแหน่งในร้านอาหาร
     # Ref: https://www.waiterio.com/blog/th/raaychuue-phnakngaanraan-aahaarthanghmd-bthbaath-khwaamrabphidch-b
@@ -362,7 +396,6 @@ class Configuration(Register): #? องค์ประกอบใน class: �
     # ประเภทของ log ในโปรแกรมนี้
     GENERAL = 'general'
     INFO = 'info'
-    WARN = 'warn'
     ERROR = 'error'
     EDIT = 'edit'
     SELL = 'sell'
@@ -370,6 +403,7 @@ class Configuration(Register): #? องค์ประกอบใน class: �
     DEL = 'delete'
     DELALL = 'delete all'
     ADD = 'add'
+    WARN = 'warn'
     RESTORE = 'restore'
     COMMAND = 'command'
     
@@ -416,28 +450,38 @@ class Configuration(Register): #? องค์ประกอบใน class: �
             return typeOf(value , float)
         elif not self.__DEFAULTSETTING__["EnableDecimalFoodPricing"]:
             return typeOf(value , int)
-    
+        
     #? method ในการบันทึกข้อมูลการทำงานต่างๆของโปรแกรม 
-    def __log__(self , text:str = "", typeOfLog: None | str = None , item: None | List[Union[str , int]] | Any = None) -> None:
+    def __log__(self , text:str = "", typeOfLog: None | str = None , item: None | List[str | int] | Any = None) -> None:
         userName: str = self.__user__["name"]
         if self.__DEFAULTSETTING__["EnableLog"]:
+            data = f"{self.getTime(realTime=True)}\t "
             if bool(text) and (typeOfLog is None or typeOfLog == "general" and item is None):
-                data = f"{self.getTime(realTime=True)}\t {text}"
+                data += f"{text}"
             elif typeOfLog == self.ADD:
-                data = f"{self.getTime(realTime=True)}\t {userName} ได้เพิ่มสินค้า \"{item}\" ในรายการเมนู"
+                data += f"{userName} ได้เพิ่มสินค้า \"{item}\" ในรายการเมนู"
             elif typeOfLog == self.DEL:
-                data = f"{self.getTime(realTime=True)}\t {userName} ได้ทำการลบสินค้า \"{item}\" ในรายการเมนู"
+                data += f"{userName} ได้ทำการลบสินค้า \"{item}\" ในรายการเมนู"
             elif typeOfLog == self.EDIT:
-                data = f"{self.getTime(realTime=True)}\t {userName} ทำการแก้ไขข้อมูลสินค้า \"{item[0]}\" ไปเป็น \"{item[1]}\" ในรายการเมนู"
+                data += f"{userName} ทำการแก้ไขข้อมูลสินค้า \"{item[0]}\" ไปเป็น \"{item[1]}\" ในรายการเมนู"
             elif typeOfLog == self.ERROR:
-                data = f"{self.getTime(realTime=True)}\t เกิดปัญหาขึ้น {text} "
+                data += f"เกิดปัญหาขึ้น {text} "
             elif typeOfLog == self.SELL:
-                data = f"{self.getTime(realTime=True)}\t {userName} ได้กดสั่งซื้ออาหารให้ลูกค้าอาหาร \"{item[0]}\" จำนวน {item[1]} อย่าง"
+                data += f"{userName} ได้กดสั่งซื้ออาหารให้ลูกค้าอาหาร \"{item[0]}\" จำนวน {item[1]} อย่าง"
             elif typeOfLog == self.COMMAND:
-                data = f"{self.getTime(realTime=True)}\t {userName} กดใช้งานคำสั่ง {text}"
+                data += f"{userName} กดใช้งานคำสั่ง {text}"
+            elif typeOfLog == self.INFO:
+                data += f"{text}"
+            elif typeOfLog == self.WARN:
+                data += f"{userName} พยายามเข้าถึงคำสั่งที่ไม่ได้รับอณุญาติให้ใช้งาน คือคำสั่ง {text}"
             self.__LOG__.append(data)
         else:
             pass
+    
+    def notAuthorizedToAccess(self , context: str) -> None:
+        noPermission = Fore.BLACK + Back.LIGHTRED_EX + '⨉ คุณไม่มีสิทธิ์ที่จะใช้งานคำสั่งนี้ได้' + Style.RESET_ALL
+        self.__log__(typeOfLog=self.WARN , text=context)
+        raise UserWarning(noPermission)
     
     #? กำหนด methods ที่สำคัญดังนี้
     #? ใช้ abstract method และเป็น private method
@@ -477,11 +521,8 @@ class Configuration(Register): #? องค์ประกอบใน class: �
     def __exitProgram__(self) -> None:
         pass
                 
-class Program(Configuration): 
+class Program(Configuration , Date): 
     #? กำหนด attributes
-    #* วันที่
-    days = ("จันทร์", "อังคาร", "พุธ", "พฤหัสบดี", "ศุกร์", "เสาร์" , "อาทิตย์")
-    months = ("มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม")
     
     #* ตัวแปรไว้เป็นค่าอ้างอิงเลข index ในการหาอาหารสินค้าในรายการเมนู
     __foodList__: List[str] = []
@@ -502,7 +543,6 @@ class Program(Configuration):
        "isInvokeMethods": None, # สถานะการทำงานของ method ->  True: method กำลังทำงาน , False: method หยุดทำงาน
        "isError": None, # สถานะการเกิดข้อผิดพลาดขึ้นใน method ที่กำลังทำงาน -> True: เกิดข้อผิดพลาด , False: ไม่เกิดข้อผิดพลาด
        "isContinue": None, # สถานะการดำเนินการต่อใน method -> True: ทำต่อ , Falnionse: หยุดทำ
-       "isNotAllowed": None # สถานะการไม่ได้ให้ได้รับอณุญาติในการใช้งานคำสั่งในบางคำสั่ง -> True: ไม่อณุญาติให้ใช้งาน , False: อณุญาติให้ใช้งาน
     }
     
     #* ชื่อคำสั่งที่ใช้งานในโปรแกรม
@@ -514,11 +554,11 @@ class Program(Configuration):
     
     #? รันคำสั่งโปรแกรมตอนเริ่มต้น
     def __init__(self , menu:List[Dict[str , Union[int , str]]] , Table: Any) -> None:
-        self.__log__(typeOfLog='general' , text="เริ่มต้นทำงานโปรแกรม")
+        self.__log__(typeOfLog=self.GENERAL , text="เริ่มต้นทำงานโปรแกรม")
         # login และ ตั้งค่าสิทธิ์การใช้งานก่อน
         if self.__DEFAULTSETTING__["EnableRegisterSystem"]:
             # เรียกใช้ method จาก superclass 
-            user = super().__getUser__()
+            user = super().__getUser__(callBackFunction=self.__log__)
             super().__setUser__(user)
             super().__setPermissions__(user)
         # เริ่มสถานะการทำงานของโปรแกรม
@@ -540,34 +580,6 @@ class Program(Configuration):
         # self.showLogo(path='./img/logo.png') # แสดง logo ร้านอาหาร
         self.greeting(self.time.hour) # ทักทายผู้ใช้งาน
         self.showCommands() # แสดงคำสั่ง
-    
-    #? method ในการรับค่าเวลามาแสดงผล 
-    def getTime(self , realTime: bool = False) -> str:
-        # สร้าง attributes และ อัปเดตค่าของมัน 
-        self.now = dt.now()
-        self.time = self.now.time()
-        self.year = self.now.date().year + 543
-        self.today = self.now.date().strftime('%d/%m/%Y') 
-        if realTime: # ใช้เวลาจริงในการเก็บ log
-            return f"{self.time}"[:11 + 1] # ตัด str ให้เหลือข้อความ 11 ตัว
-        else:
-            return f"{self.time.hour}:{f'0{self.time.minute}' if self.time.minute < 10 else self.time.minute}:{f'0{self.time.second}' if self.time.second < 10 else self.time.second}"
-    
-    #? method สวัสดีผู้ใช้งานในแต่ละช่วงเวลา
-    def greeting(self , h: int) -> None:
-        hi = ''
-        # Ref: https://www.aepenglishschool.com/content/5024/english-time
-        if h >= 5 and h <= 11: hi = 'สวัสดีตอนเช้า'
-        elif h >= 12  and h <= 17: hi = 'สวัสดีตอนบ่าย'
-        elif h >= 18 and h <= 21: hi = 'สวัสดีตอนเย็น'
-        elif h >= 22 and h >= 4: hi = 'สวัสดีตอนกลางคืน'
-        # แสดงข้อความ
-        if self.__DEFAULTSETTING__["EnableRegisterSystem"]:
-            print(f'🙏 {hi} คุณ {self.__user__["name"]} วันนี้ วัน{self.days[self.now.date().weekday()]} ที่ {self.now.date().day} เดือน {self.months[self.now.date().month - 1]} ปี พ.ศ. {self.year} ({self.today})')
-        else:
-            print(f'🙏 {hi} วันนี้ วัน{self.days[self.now.date().weekday()]} ที่ {self.now.date().day} เดือน {self.months[self.now.date().month - 1]} ปี พ.ศ. {self.year} ({self.today})')
-        print(f"🕓 เวลา {f'0{self.time.hour}' if self.time.hour < 10 else self.time.hour}:{f'0{self.time.minute}' if self.time.minute < 10 else self.time.minute}:{f'0{self.time.second}' if self.time.second < 10 else self.time.second}")
-        print('โปรแกรมพร้อมให้บริการ 🙂')
         
     #? method สร้างเลข id
     def createId(self , length: int = 7) -> str:
@@ -586,19 +598,19 @@ class Program(Configuration):
     #? (method หลัก) ในการเปลี่ยนค่าข้อมูลใน foodList , idList เมื่อในรายการในเมนู (menu) มีการเปลี่ยนแลง ตัวแปรทั้ง 2 ตัวนี้จะเปลี่ยนตามด้วย
     def __setElements__(self) -> None:
         # method getValue จะวน loop ดึง value ที่อยู่ใน dict ของ menu
-        def getValue(setInitialValue: List[str] , keyName: str) -> List[str]: 
-            setInitialValue.clear() # ล้างค่า elements เก่าทุกครั้ง
-            for item in self.__menu__: setInitialValue.append(item[keyName]) # เพิ่ม element ใหม่ให้ parameter
-            newValue = setInitialValue 
-            return newValue
+        def getValue(variable: List[str] , keyName: str) -> List[str]: 
+            variable.clear() # ล้างค่า elements เก่าทุกครั้ง
+            for item in self.__menu__: variable.append(item[keyName]) # เพิ่ม element ใหม่ให้ parameter
+            newVariable = variable 
+            return newVariable
         # ถ้าไม่มีรายการสินค้าอะไรในเมนูให้ลบข้อมูล li อันเก่าทั้งหมด 
         if self.__menu__ == []:
             self.__foodList__.clear()
             self.__idList__.clear()
         else:
             # เก็บค่า list ที่ได้ให้ 2 ตัวแปร
-            self.__foodList__ = getValue(setInitialValue=self.__foodList__ , keyName="name") 
-            self.__idList__ = getValue(setInitialValue=self.__idList__ , keyName="id")
+            self.__foodList__ = getValue(variable=self.__foodList__ , keyName="name") 
+            self.__idList__ = getValue(variable=self.__idList__ , keyName="id")
         
     #? (method หลัก) ในการค้นหา dictionary ที่อยู่ใน foodList , idList (อ่านค่าใน list) ส่งคืนกลับเป็นเลข index หรือ None 
     def __search__(self , param: str) -> int | None:
@@ -675,7 +687,7 @@ class Program(Configuration):
                 for number, key in enumerate(showOrder):
                     print(f"🍽 {number + 1}. {key} จำนวน {showOrder[key]:,} อย่าง ราคาจานละ {priceList[number]} บาท รวมเป็นเงิน {self.currentOrder[key]:,} บาท")
                 print(f"💸 ยอดเงินรวมท้งหมด {self.result:,} บาท")
-                self.__log__(text=f'มีการสั่งอาหาร ใน order หมายเลขที่ {self.orderNumber} คิดเป็นเงินจำนวนทั้งหมด {self.result:,} บาท')
+                self.__log__(text=f'มีการสั่งอาหารใน order หมายเลขที่ {self.orderNumber} คิดเป็นเงินจำนวนทั้งหมด {self.result:,} บาท')
                 # เริ่มสั่งรายการใหม่ให้ set ค่าเริ่มใหม่หมด (ลบสินค้า order ปัจจุบันออก)
                 self.result = 0
                 self.currentOrder.clear()
@@ -880,8 +892,6 @@ class Program(Configuration):
                         raise UserWarning(f"❌ ไม่มี \"{item}\" อยู่ในเมนูอาหารโปรดกรอกชื่อหรือเลข id ใหม่")
             except UserWarning as err:
                 print(Fore.RED + err.__str__() + Fore.RESET)
-                if self.__programStatus__["isError"]:
-                    print('ยกเลิกการดำเนินการลบสินค้าล่าสุด')
             else:
                 if self.__programStatus__["isDeleted"]:
                     print(f'🍖 จำนวนรายการในเมนูอาหารตอนนี้มีทั้งหมดอยู่ {len(self.__menu__)} เมนู')
@@ -895,22 +905,22 @@ class Program(Configuration):
             try:
                 self.__programStatus__["isError"] = False # set ค่าสถานะ
                 # ถามข้อมูล
-                product = input('ใส่ชื่ออาหารหรือรหัสสินค้าเพื่อทำการแก้ไข : ')
-                product = product.lower().strip()
+                item = input('ใส่ชื่ออาหารหรือรหัสสินค้าเพื่อทำการแก้ไข : ')
+                item = item.lower().strip()
                 # ออกจาการทำงานของ method
-                if product == 'e' or product == 'end': 
+                if item == 'e' or item == 'end': 
                     self.__programStatus__["isInvokeMethods"] = False
                 # แสดงรายการเมนู    
-                elif product == 'm' or product == 'menu': 
+                elif item == 'm' or item == 'menu': 
                     self.showMenu()
-                elif product == 'n':
+                elif item == 'n':
                     self.notify("เพิ่อออกจาการแก้ไข" , None)
                 else:
                     # หาเลข index ของเมนูอาหาร
-                    findIndex = self.__search__(product)
+                    findIndex = self.__search__(item)
                     idx = findIndex # เลข index
                     if idx == None: # ใส่ข้อมูลไม่ถูกต้อง
-                        raise UserWarning(f'❌ "{product}" ไม่ค้นพบชื่ออาหารและรหัสสินค้าอยู่ในรายการสินค้าโปรดลองใหม่อีกครั้ง!')
+                        raise UserWarning(f'❌ "{item}" ไม่ค้นพบชื่ออาหารและรหัสสินค้าอยู่ในรายการสินค้าโปรดลองใหม่อีกครั้ง!')
                     else:
                         # แสดงข้อความ
                         print(f'คุณเลือกรายการสินค้าที่จะแก้ไข คือ {self.__menu__[idx]["name"]} ราคา {self.__menu__[idx]["price"]} บาท รหัสสินค้าคือ {self.__menu__[idx]["id"]}')
@@ -987,19 +997,18 @@ class Program(Configuration):
 
     #? method ออกจากโปรแกรม
     def __exitProgram__(self) -> None:
-        self.__programStatus__["isWorking"] = False
         #* ถ้ามีการสั่งอาหารให้แสดงรายการสรุปสินค้าที่ซื้อไปภายใน 1 วัน ถ้าไม่ได้สั่งซื้อไม่ต้องแสดง
         self.__allOrders__.__len__() != 0 and print(self.conclusion(total=self.__totalMoney__ , orders=self.__allOrders__))
         print('🙏 ขอบคุณที่มาใช้บริการของเรา')
+        # ตั้งค่าสถานะให้เป็น False เพื่ออกจาก loop แล้วโปรแกรมจบการทำงาน
+        self.__programStatus__["isWorking"] = False
         self.__programStatus__["programeIsRunning"] = False
 
     #? (method หลัก) ในการดำเนินการหลักของโปรแกรม
     def EXECUTE(self) -> None:
-        noRight = Fore.BLACK + Back.LIGHTRED_EX + '⨉ คุณไม่มีสิทธิ์ที่จะใช้งานคำสั่งนี้ได้' + Style.RESET_ALL
         # infinity loop จนกว่าจะพิมพ์คำสั่ง "e" หรือ "exit" เพื่อออกจาก loop
         while self.__programStatus__["programeIsRunning"]:
             self.__programStatus__["isWorking"] = True
-            self.__programStatus__["isNotAllowed"] = False
             try:
                 command = input(Fore.CYAN + "พิมพ์คำสั่งเพื่อดำเนินการต่อไป >>> " + Fore.RESET)
                 command = command.lower().strip()
@@ -1028,8 +1037,7 @@ class Program(Configuration):
                             self.__log__(typeOfLog=self.COMMAND , text="การสั่งซื้ออาหาร")
                             self.__foodOrdering__()
                         else: 
-                            self.__programStatus__["isNotAllowed"] = True
-                            raise UserWarning(noRight)
+                            self.notAuthorizedToAccess(context="การสั่งซื้ออาหาร")
                     #* เพิ่มสินค้า
                     elif command == "a" or command == "add": 
                         #* ตรวจสอบสิทธิ์การเข้าถึง 
@@ -1037,46 +1045,42 @@ class Program(Configuration):
                             self.__log__(typeOfLog=self.COMMAND , text="การเพิ่มเมนูอาหาร")
                             self.__addItem__()
                         else: 
-                            self.__programStatus__["isNotAllowed"] = True
-                            raise UserWarning(noRight)
+                            self.notAuthorizedToAccess(context="การเพิ่มเมนูอาหาร")
                     #* ลบสินค้า
                     elif command == "d" or command == "delete":
                         if self.__user__["AccessPermissions"]["DeleteData"]:
                             self.__log__(typeOfLog=self.COMMAND , text="การลบเมนูอาหาร")
                             self.__removeItems__()
                         else:
-                            self.__programStatus__["isNotAllowed"] = True
-                            raise UserWarning(noRight)
+                            self.notAuthorizedToAccess(context="การลบเมนูอาหาร")
                     #* แก้ไขสินค้า
                     elif command == "ed" or command == "edit": 
                         if self.__user__["AccessPermissions"]["ModifyData"]:
                             self.__log__(typeOfLog=self.COMMAND , text="การแก้ไขเมนูอาหาร")
                             self.__editItems__()
                         else:
-                            self.__programStatus__["isNotAllowed"] = True
-                            raise UserWarning(noRight)
+                            self.notAuthorizedToAccess(context="การแก้ไขเมนูอาหาร")
                     #* ลบรายการสินค้าทั้งหมด
                     elif command == "cl" or command == "clear":
                         if self.__user__["AccessPermissions"]["DeleteAllData"]:
                             self.__log__(typeOfLog=self.COMMAND , text="การลบรายการเมนูอาหารทั้งหมด")
                             self.__deleteMenu__()
                         else:
-                            raise UserWarning(noRight)
+                            self.notAuthorizedToAccess(context="การลบรายการเมนูอาหารทั้งหมด")
                     #* แสดงกิจกรรมการทำงานต่างๆของโปรแกรม
                     elif command == "l" or command == "log":
                         if self.__user__["AccessPermissions"]["ViewLog"]:
                             self.__showLog__()
                         else:
-                            self.__programStatus__["isNotAllowed"] = True
-                            raise UserWarning(noRight)
+                            self.notAuthorizedToAccess(context="การดู log ของโปรแกรม")
                     #* ออกจากบัญชี
                     elif command == "logout":
                         # ต้องเปิดใช้งานระบบ login (True) ถึงจะ logout ได้
                         if self.__DEFAULTSETTING__["EnableRegisterSystem"]:
-                            if self.__logout__(): # method logout จะส่งค่าสถานะมาถ้า True เงื่อนไขนี้จะทำงาน
+                            if self.__logout__(callBackFunction=self.__log__): # method logout จะส่งค่าสถานะมาถ้า True เงื่อนไขนี้จะทำงาน
                                 self.__programStatus__["isWorking"] = False
                                 # ให้ login ใหม่
-                                user = self.__getUser__() # รอรับข้อมูลผู้ใช้งาน
+                                user = self.__getUser__(callBackFunction=self.__log__) # รอรับข้อมูลผู้ใช้งาน
                                 self.__setUser__(user) # ตั้งค่าผู้ใช้งาน
                                 self.__setPermissions__(user) # ตั้งค่าสิทธิ์
                                 self.greeting(h=self.time.hour) # ทักทายผู้ใช้งาน
