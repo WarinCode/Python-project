@@ -26,7 +26,7 @@ from rich.panel import Panel
 # เข้าถึง directory ของ project:     cd Python-project
 # ติดตั้ง virtual environment:       py -m venv .venv
 # เปิดใช้งาน venv:                  .venv\Scripts\activate
-# ติดตั้ง library ที่อยู่ใน project:     pip install -r requirement.txt
+# ติดตั้ง library ที่อยู่ใน project:     pip install -r requirements.txt
 # คำสั่งรันโปรแกรม:                   py main.py หรือ py "C:\Users\ชื่อผู้ใช้งานคอมพิวเตอร์\Desktop\Python-project\main.py"
 # ปิดใช้งาน venv:                   deactivate
 
