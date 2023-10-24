@@ -336,6 +336,7 @@ class Register(Console):
 
     #? method แสดง loading 
     def __loading__(self , isLogin = False , isLogout = False , isCreate = False , isDelete = False) -> None:
+        self.clear()
         if isLogin:
             with self.status("[cyan]กำลัง login เข้าสู่ระบบ กรุณารอสักครู่ ...[/]" , speed=1.4): #  spinner='material'
                 for i in ['กำลังตรวจสอบความถูกต้องข้อมูลผู้ใช้งาน' , 'ข้อมูลผู้ใช้งานถูกต้อง']:
@@ -356,7 +357,7 @@ class Register(Console):
         else:
             self.print('เกิดข้อผิดพลาดขึ้น!' , style='red')
             raise
-        print('\n')
+        self.print('\n')
         
 class Date(Console):
         
@@ -783,6 +784,11 @@ class Program(Configuration , Date , Console):
         self.notify("เพื่อออกจากการสั่งซื้อ" , "❔ พิมพ์ตัว \"c\" หรือ \"cancel\" เพื่อยกเลิก order ที่สั่งไปทั้งหมด"
         , "❔ พิมพ์ตัว \"s\" หรือ \"show\" เพื่อแสดงรายการที่สั่งไปทั้งหมด")
         
+        def cancelOrder() -> None:
+            self.__currentOrder__.clear()
+            self.__shoppingList__.clear()
+            self.__orderQuantity__.clear()
+            
         #* เมื่อหยุดการทำงานของ method นี้ให้คำนวณยอดเงินรวม order ที่สั่งไป
         def calculateOrder() -> None:
             #* มีการสั่งอาหาร = ข้อมูลใน dict จะไม่เป็น 0
@@ -823,8 +829,7 @@ class Program(Configuration , Date , Console):
                 # เริ่มสั่งรายการใหม่ให้ set ค่าเริ่มใหม่หมด (ลบสินค้า order ปัจจุบันออก)
                 self.__result__ = 0
                 self.__orderCode__ = 0
-                self.__currentOrder__.clear()
-                self.__shoppingList__.clear()
+                cancelOrder()
                 # ถ้าไม่ได่สั่งอะไรไม่ต้องแสดงรายการ
             else: 
                 self.print('ไม่มีการสั่งอาหารรายการใดๆ')
@@ -865,9 +870,9 @@ class Program(Configuration , Date , Console):
                     self.__PROGRAMSTATUS__["isInvokeMethods"] = False
                 # ยกเลิกอาหารที่สั่ง
                 elif foodName == "c" or foodName == "cancel":
-                    self.__currentOrder__.clear() # ลบรายการอาหารที่เลือกไป
-                    manageItems(restore=True) # คืนค่าจำนวนสินค้าที่ลดจำนวนลงจากการสั่งซื้อ
-                    self.print('[green]✓ ลบรายการ order ที่ทำการสั่งไปเรียบร้อย[/]')
+                    manageItems(restore=True) # คืนค่าจำนวนสินค้าที่ลดจำนวนลงจากการสั่งซื้อ                    
+                    cancelOrder()
+                    self.print('[green]✓ ยกเลิกรายการ order ที่ทำการสั่งไปเรียบร้อย[/]')
                     # เก็บ log
                     self.__log__(text=f'ลบรายการ order ที่กดสั่งไป หมายเลข order ที่ {self.__orderNumber__ + 1} ')
                 # แสดง order ที่สั่งไป
@@ -929,9 +934,7 @@ class Program(Configuration , Date , Console):
                                 else:
                                     self.__shoppingList__.append(shoppingCart["name"])
                                     self.__currentOrder__.append(shoppingCart)
-                                    # self.print(self.__currentOrder__)
-                                    # เก็บ log
-                                    self.__log__(typeOfLog=self.SELL , item=[foodName , amount])
+                                    self.__log__(typeOfLog=self.SELL , item=[foodName , amount]) # เก็บ log
                             # ถ้ามีชื่ออยู่ใน list ให้เพิ่มจำนวนอาหารเพิ่มขึ้น   
                             elif foodName in self.__shoppingList__: 
                                 if self.__PROGRAMSTATUS__["isError"]: pass
@@ -939,7 +942,6 @@ class Program(Configuration , Date , Console):
                                     idx = self.__search__(param=foodName , _object=self.__shoppingList__)
                                     # เพิ่มจำนวนอาหารที่มีอยู่แล้ว
                                     self.__currentOrder__[idx]["amount"] += amount 
-                                    # self.print(self.__currentOrder__)
                                     # เก็บ log
                                     self.__log__(text=f'{self.__user__["name"]} ได้สั่ง "{foodName}" เพิ่มอีก {amount} จำนวน รวมเป็น {self.__currentOrder__[idx]["amount"]}')
                 # กรณีค้นหาแล้วไม่มีชื่ออาหาร หรือ ไม่มีรหัสสินค้า อยู่ในเมนู    
