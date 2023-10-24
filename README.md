@@ -20,7 +20,7 @@
   2. เข้าถึง directory ของ project <code>cd Python-project</code><br>
   3. ติดตั้ง virtual environment <code>py -m venv .venv</code><br>
   4. เปิดใช้งาน venv<code>.venv\Scripts\activate</code><br>
-  5. ติดตั้ง library ที่อยู่ใน project <code>pip install -r requirement.txt</code><br>
+  5. ติดตั้ง library ที่อยู่ใน project <code>pip install -r requirements.txt</code><br>
   6. run program <code>python main.py</code><br>
   7. ปิดใช้งาน venv<code>deactivate</code><br>
 </div>

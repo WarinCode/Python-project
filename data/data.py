@@ -1,10 +1,13 @@
-from typing import Dict , List
+from typing import Dict, List
+from random import shuffle
+
 # ชื่อรายการอาหารทั้งหมด
-# ข้างใน list มี dictionary ทั้งหมด 100 อัน โดยเลข index อยู่ที่ 0 ถึง 99
-# ข้างใน dictionary ประกอบด้วย properties 3 อันคือ
+# ข้างใน list เก็บ dictionary ทั้งหมด 171 อัน โดยเลข index อยู่ที่ 0 ถึง 170
+# ข้างใน dictionary ประกอบด้วย properties 4 อันได้แก่
 # name: เก็บชื่ออาหาร
 # price: เก็บราคา
 # id: เก็บรหัสสินค้า
+# amount: จำนวนอาหาร
 class Menu:
     __listMenu__ = [
         {"name": "สลัดผักมะเขือเทศและเนยสด", "price": 65, "id": 518, "amount": 30},
@@ -52,7 +55,7 @@ class Menu:
         {"name": "ปลาเก๋าลายจุด", "price": 50, "id": 845, "amount": 30},
         {"name": "ผัดไทยกุ้งสด", "price": 60, "id": 397, "amount": 30},
         {"name": "ข้าวผัดกระเพราไก่", "price": 45, "id": 456, "amount": 30},
-        {"name": "พาสต้ากับมะเขือเทศและโหระพา","price": 120,"id": 687,"amount": 30},
+        {"name": "พาสต้ากับมะเขือเทศและโหระพา", "price": 120, "id": 687, "amount": 30},
         {"name": "ปลากะพงสีดอกกุหลาบ", "price": 60, "id": 779, "amount": 30},
         {"name": "ลาบเป็ด", "price": 60, "id": 849, "amount": 30},
         {"name": "ก๋วยเตี๋ยวเส้นใหญ่น้ำตกหมู", "price": 65, "id": 313, "amount": 30},
@@ -180,20 +183,21 @@ class Menu:
         {"name": "ผัดกระเพรากุ้ง", "price": 70, "id": 384, "amount": 30},
     ]
 
-    @classmethod 
-    def getMenu(cls) -> List[Dict[str, str | int]]:
-        return cls.__listMenu__
+    @classmethod
+    def getMenu(cls, length: int = 171) -> List[Dict[str, str | int]]:
+        shuffle(cls.__listMenu__)
+        return cls.__listMenu__[:length]  # สามารถกำหนดจำนวนของข้อมูลที่จะส่งได้
+
 
 # สมมุติโครงสร้างข้อมูลผูใช้งานโปรแกรมนี้ในร้านอาหาร
 # ข้อมูลผู้ใช้งานในโปรแกรมนี้จะถูกเก็บไว้ใน list userData
-# ข้างในมี dictionary ของผู้ใช้งานแต่ละคน
+# ข้างใน list เก็บ dictionary ของข้อมูลผู้ใช้งานแต่ละคน
+# โดย properties ใน dictionary มี 4 อันประกอบด้วย
+# name : ชื่อผู้ใชงาน
+# email : บัญชีอีเมลที่ใช้งาน
+# password : รหัสผ่านผู้ใช้งาน
+# position : ตำแหน่งงานที่ทำงานอยู่ในร้านอาหาร
 
-# ชื่อรายการอาหารทั้งหมด
-# ข้างใน list มี dictionary ทั้งหมด 100 อัน โดยเลข index อยู่ที่ 0 ถึง 99
-# ข้างใน dictionary ประกอบด้วย properties 3 อันคือ
-# name: เก็บชื่ออาหาร
-# price: เก็บราคา
-# id: เก็บรหัสสินค้า
 class Users:
     __usersData__ = [
         {
@@ -269,12 +273,13 @@ class Users:
             "position": "พนักงานต้อนรับ",
         },
     ]
-    
-    #? method ในการให้ข้อมูลผู้ใช้งาน
+
+    # ? method ในการให้ข้อมูลผู้ใช้งาน
     @classmethod
-    def getUser(cls) -> List[Dict[str , str]]:
+    def getUser(cls) -> List[Dict[str, str]]:
         return cls.__usersData__
-    
-    #? method ในการข้อมูลผู้ใช้งาน
-    def addUser(self, newUser: Dict[str, str]) -> None:
-        self.__usersData__.append(newUser)
+
+    # ? method ในการข้อมูลผู้ใช้งาน
+    @classmethod
+    def addUser(cls, newUser: Dict[str, str]) -> None:
+        cls.__usersData__.append(newUser)
