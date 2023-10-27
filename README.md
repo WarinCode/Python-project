@@ -14,7 +14,7 @@
   <br>
 </div>
 
-<h1 align="center">โปรแกรมร้านอาหารขายอาหาร จัดการสินค้าในร้านอาหาร</h1>
+<h1 align="center">โปรแกรมร้านอาหารขายอาหาร</h1>
 
 <h2>ฟีเจอร์ของโปรแกรม</h2>
 <ul>
@@ -22,10 +22,10 @@
   <li>ลบสินค้า</li>
   <li>แก้ไขสินค้า</li>
   <li>สั่งซื้ออาหาร</li>
-  <li>แสดงบิลใบเสร็จรายละเอียดการสั่งซื้ออาหาร</li>
+  <li>แสดงบิลใบเสร็จรายละเอียดการสั่งซื้อ</li>
   <li>login , logout , สมัครสมาชิก</li>
   <li>ดูบันทึกของโปรแกรม</li>
-  <li>ระดับสิทธิ์การเข้าถึงและใช้งานคำสั่ง</li>
+  <li>กำหนดสิทธิ์การเข้าถึงและใช้งานคำสั่ง</li>
 </ul>
 
 ## การติดตั้งและการนำโปรเจคไปใช้งาน
@@ -33,8 +33,8 @@
 <div>
   <p>เครื่องมือที่ต้องมีก่อนนำไปใช้งาน</p>
   <ul>
+    <li><a href="https://code.visualstudio.com/download">Visual Studio Code</a></li>   
     <li><a href="https://www.python.org/downloads/">python</a></li>    
-    <li><a href="https://code.visualstudio.com/download">Visual Studio Code</a></li>
     <li><a href="https://git-scm.com/downloads">git</a></li>
   </ul>
   <br>
