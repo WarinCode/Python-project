@@ -21,10 +21,11 @@
   <li>เพิ่มสินค้า</li>
   <li>ลบสินค้า</li>
   <li>แก้ไขสินค้า</li>
-  <li>คำนวณการสั่งซื้ออาหาร</li>
+  <li>สั่งซื้ออาหาร</li>
   <li>แสดงบิลใบเสร็จรายละเอียดการสั่งซื้ออาหาร</li>
-  <li>ระบบ login , logout , สมัครสมาชิก</li>
+  <li>login , logout , สมัครสมาชิก</li>
   <li>ดูบันทึกของโปรแกรม</li>
+  <li>ระดับสิทธิ์การเข้าถึงและใช้งานคำสั่ง</li>
 </ul>
 
 ## การติดตั้งและการนำโปรเจคไปใช้งาน
@@ -32,9 +33,9 @@
 <div>
   <p>เครื่องมือที่ต้องมีก่อนนำไปใช้งาน</p>
   <ul>
+    <li><a href="https://www.python.org/downloads/">python</a></li>    
     <li><a href="https://code.visualstudio.com/download">Visual Studio Code</a></li>
     <li><a href="https://git-scm.com/downloads">git</a></li>
-    <li><a href="https://www.python.org/downloads/">python</a></li>
   </ul>
   <br>
 </div>
@@ -42,6 +43,7 @@
 <p>เปิด terminal แล้วพิมพ์คำสั่งตามขั้นตอนต่อไปนี้</p>
 
 ### 1. ดาวโหลด์ code ของโปรเจค
+ถ้าไม่ได้ติดตั้ง git สามารถดาวโหลด์เป็น zip แล้วไปแตกไฟล์ได้
 ```
 git clone https://github.com/VarinCode/Python-project.git
 ```
@@ -56,7 +58,7 @@ cd Python-project
 py -m venv .venv
 ```
 
-### 4. เปิดใช้งาน
+### 4. เปิดใช้งานสภาพแวดล้อมจำลองที่สร้างขึ้น
 ```
 .venv\Scripts\activate
 ```
