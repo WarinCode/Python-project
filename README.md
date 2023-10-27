@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://thaimooc.org/sites/default/files/2022-09/ku_11.png" width="300px" height="300px">
+  <img src="./img/KU.png" width="300px" height="300px">
   <h1><b>มหาวิทยาลัยเกษตรศาสตร์วิทยาเขตศรีราชา</b></h1>
   <br>
 </div>
