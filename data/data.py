@@ -8,6 +8,7 @@ from random import shuffle
 # price: เก็บราคา
 # id: เก็บรหัสสินค้า
 # amount: จำนวนอาหาร
+
 class Menu:
     __listMenu__ = [
         {"name": "สลัดผักมะเขือเทศและเนยสด", "price": 65, "id": 518, "amount": 30},
@@ -273,7 +274,7 @@ class Users:
             "position": "พนักงานต้อนรับ",
         },
     ]
-
+    
     # ? method ในการให้ข้อมูลผู้ใช้งาน
     @classmethod
     def getUser(cls) -> List[Dict[str, str]]:
