@@ -50,25 +50,25 @@ class Date(Console):
     today = now.date().strftime('%d/%m/%Y') 
     
     #? method สวัสดีผู้ใช้งานในแต่ละช่วงเวลา
-    def greeting(self , h: int , userName: str = "") -> None:
+    def greeting(self , hour: int , userName: str = "") -> None:
         hi = ''
         # Ref: https://www.aepenglishschool.com/content/5024/english-time
-        if h >= 5 and h <= 11: hi = 'สวัสดีตอนเช้า'
-        elif h >= 12  and h <= 17: hi = 'สวัสดีตอนบ่าย'
-        elif h >= 18 and h <= 21: hi = 'สวัสดีตอนเย็น'
-        elif h >= 22 and h >= 4: hi = 'สวัสดีตอนกลางคืน'
+        if hour >= 5 and hour <= 11: hi = 'สวัสดีตอนเช้า'
+        elif hour >= 12  and hour <= 17: hi = 'สวัสดีตอนบ่าย'
+        elif hour >= 18 and hour <= 21: hi = 'สวัสดีตอนเย็น'
+        elif hour >= 22 and hour >= 4: hi = 'สวัสดีตอนกลางคืน'
         # แสดงข้อความ
         self.print(f'🙏 {hi} คุณ {userName} วันนี้ วัน{self.days[self.now.date().weekday()]} ที่ {self.now.date().day} เดือน {self.months[self.now.date().month - 1]} ปี พ.ศ. {self.year} ({self.today})')
         self.print(f"🕓 เวลา {f'0{self.time.hour}' if self.time.hour < 10 else self.time.hour}:{f'0{self.time.minute}' if self.time.minute < 10 else self.time.minute}:{f'0{self.time.second}' if self.time.second < 10 else self.time.second}")
         self.print('โปรแกรมพร้อมให้บริการ 🙂')
 
     #? method ในการรับค่าเวลามาแสดงผล 
-    def getTime(self , realTime: bool = False) -> str:
+    def getTime(self , log: bool = False) -> str:
         # อัปเดตค่าของมัน 
         self.now = dt.now()
         self.time = self.now.time()
-        if realTime: # ใช้เวลาจริงในการเก็บ log
-            return f"{self.time}"[:11 + 1] # ตัด str ให้เหลือข้อความ 11 ตัว
+        if log: # ใช้เวลาจริงในการเก็บ log
+            return f"{self.now.date()} {str(self.time)[:11 + 1]}" # ตัด str ให้เหลือข้อความ 11 ตัว
         else:
             return f"{self.time.hour}:{f'0{self.time.minute}' if self.time.minute < 10 else self.time.minute}:{f'0{self.time.second}' if self.time.second < 10 else self.time.second}"
     
@@ -156,15 +156,12 @@ class Configuration(Date , Console):
         "AccessPermissions": {}
     }
     
-    #* บันทึกข้อมูลผู้ใช้งานจากการ login
-    __saveUserData__ = None
-    
     #? method ในการ login 
-    def __login__(self) -> Dict[str , str]:   
+    def __login__(self , saveUserData: Dict[str , str] = {}) -> Dict[str , str]:   
         
         # (function ย่อย) function ในการเช็คค่าว่าง  True เป็นค่าว่างเปล่า , False ไม่เป็นค่าว่างเปล่า
-        isEmpty:bool = lambda var: var == "" or var.__len__() == 0
-        
+        isEmpty: bool = lambda var: var == "" or var.__len__() == 0
+                
         #* (function ย่อย) function ในการ login ผู้ใช้งานกรอกข้อมูล
         def loginFunction() -> Dict[str , Any]:
             # ข้อมูลที่ผู้ใช้งานต้องกรอก
@@ -177,36 +174,35 @@ class Configuration(Date , Console):
             self.line()
             
             # เงื่อนไขในการวน loop ซ้ำๆถ้า ตัวแปร userLogin ค่า value ไม่มีการเลี่ยนแปลงจากค่า None
-            while not bool(userLogin["nameOrEmail"]) or not bool(userLogin["password"]):
-                while not bool(userLogin["nameOrEmail"]):
-                    try:
-                        nameOrEmail = self.input("ชื่อผู้ใช้งานหรืออีเมล : ").strip()
-                        if isEmpty(nameOrEmail):
-                            raise Exception('❌ ชื่อผู้ใช้งานไม่ถูกต้องโปรดลองใหม่อีกครั้ง')
-                        elif len(nameOrEmail) > self.__WORD_LENGTH__:
-                            raise Exception('❌ ชื่อผู้ใช้งานของคุณมีความยาวมากเกินไป')
-                        else:
-                            userLogin['nameOrEmail'] = nameOrEmail
-                    except Exception as err:
-                        self.print(err.__str__() , style='red')
-                while not bool(userLogin["password"]):
-                    try:
-                        # ถ้าส่งค่า argument ไปให้ password=True จะสามารถซ่อนการแสดงข้อความที่เป็นรหัสผ่านได้
-                        password = self.input("รหัสผ่าน : " , password=True).strip()
-                        if isEmpty(password):
-                            raise Exception('❌ รหัสผ่านผู้ใช้งานไม่ถูกต้องโปรดลองใหม่อีกครั้ง')
-                        else:
-                            userLogin['password'] = password
-                    except Exception as err:
-                        self.print(err.__str__() , style='red')
+            while not bool(userLogin["nameOrEmail"]):
+                try:
+                    nameOrEmail = self.input("ชื่อผู้ใช้งานหรืออีเมล : ").strip()
+                    if isEmpty(nameOrEmail):
+                        raise Exception('❌ ชื่อผู้ใช้งานไม่ถูกต้องโปรดลองใหม่อีกครั้ง')
+                    elif len(nameOrEmail) > self.__WORD_LENGTH__:
+                        raise Exception('❌ ชื่อผู้ใช้งานของคุณมีความยาวมากเกินไป')
+                    else:
+                        userLogin['nameOrEmail'] = nameOrEmail
+                except Exception as err:
+                    self.print(err.__str__() , style='red')
+            while not bool(userLogin["password"]):
+                try:
+                    # ถ้าส่งค่า argument ไปให้ password=True จะสามารถซ่อนการแสดงข้อความที่เป็นรหัสผ่านได้
+                    password = self.input("รหัสผ่าน : " , password=True).strip()
+                    if isEmpty(password):
+                        raise Exception('❌ รหัสผ่านผู้ใช้งานไม่ถูกต้องโปรดลองใหม่อีกครั้ง')
+                    else:
+                        userLogin['password'] = password
+                except Exception as err:
+                    self.print(err.__str__() , style='red')
             return { # ส่งค่าเป็น dict
                 "status": bool(userLogin),  # สถานะข้อมูลของผู้ใช้งาน
                 "user": userLogin # ข้อมูลผู้ใช้งานเป็น dictionary
             }
-        
+            
         #* (function ย่อย) function ในการตรวจสอบข้อมูลผู้ใช้งาน 
         def userVerification(status: bool , validateUser: Dict[str , str]) -> bool:
-            self.__loading__()
+            # self.__loading__(text='กำลังตรวจสอบข้อมูล...')
             # parameter status คือ ค่าสถานะที่ส่งมา True แปลว่าข้อมูลพร้อมตรวจสอบความถูกต้อง ถ้า False คือไม่พร้อมตรวจสอบ
             # parameter validateUser คือ ข้อมูลผู้ใช้งานที่ login มีการตรวจสอบมานิดนึงแล้วแต่ข้อมูลที่ส่งมานั้นจะอยู่ในระบบผู้ใช้งานโปรแกรมนี้หรือไม่ต้องนำมาตรวจสอบให็ถูกต้องถึงจะ login สำเร็จ
             isCorrect = { # ถ้าค่า True แปลว่ามีข้อมูลผู้ใช้งานมีอยู่ในระบบ
@@ -234,7 +230,7 @@ class Configuration(Date , Console):
                           
                         #* ตรวจสอบแล้วว่ามีข้อมูลผู้ใช้งานที่ส่งมาตรงและถูกต้องกับข้อมูลที่เก็บไว้ในไฟล์  
                         if ((isCorrect["name"] or isCorrect["email"]) and isCorrect["password"]) or validateUser["nameOrEmail"] == 'root': 
-                            #? สำหรับ รันและทดสอบโปรแกรมจะใช้ root ใส่แ 
+                            #? สำหรับ รันและทดสอบโปรแกรมจะใช้ root ใส่แทน 
                             if validateUser["nameOrEmail"] == 'root':
                                 validateUser["name"] = 'root'
                                 validateUser["position"] = 'admin'
@@ -263,7 +259,8 @@ class Configuration(Date , Console):
                 self.print(err.__str__() , style='red')
             else:
                 # บันทึกข้อมูลผู้ใช้งาน
-                self.__saveUserData__ = validateUser
+                for key in validateUser:
+                    saveUserData[key] = validateUser[key]
             # ส่งค่าสถานะถ้า ส่ง True แปลว่า login สำเร็จ ถ้า False แปลว่า login ไม่สำเร็จ
             return isValid
         
@@ -284,9 +281,10 @@ class Configuration(Date , Console):
                     self.__createAccount__() # เรียกใช้ method สร้างบัญชีผู้ใช้งาน
                     break # ออกจาก loop นี้
         else: # หลังออกจาก loop
-            self.__loading__(isLogin=True)
+            # self.__loading__(isLogin=True)
+            pass
         # ส่งข้อมูลผู้ใช้งาน
-        return self.__saveUserData__
+        return saveUserData
     
     #? method ในการ สมัครบัญชีผู้ใช้งานใหม่
     def __createAccount__(self) -> Dict[str , str]:
@@ -302,82 +300,84 @@ class Configuration(Date , Console):
         self.line()
         self.print('\t[blue bold underline]Sign Up[/]') # แสดงข้อความ
         self.line()
-        
-        while (not bool(newUser["name"])) or (not bool(newUser["password"])) or (not bool(newUser["position"])) or (not bool(newUser["email"])):
-            while not bool(newUser["name"]):
-                try:
-                    name = self.input("ตั้งชื่อผู้ใช้งาน : ").strip()
-                    if isEmpty(name):
-                        raise Exception('❌ ชื่อผู้ใช้งานไม่ถูกต้องโปรดลองใหม่อีกครั้ง')
-                    elif len(name) > self.__WORD_LENGTH__:
-                        raise Exception('❌ ชื่อผู้ใช้งานของคุณมีความยาวมากเกินไป')
-                    elif len(name) <= self.__NAME_LENGTH__:
-                        raise Exception('❌ ชื่อผู้ใช้งานของคุณมีสั้นเกินไป')
-                    else:
-                        newUser['name'] = name
-                except Exception as err:
-                    self.print(err.__str__() , style='red')
-            while not bool(newUser["email"]):
-                try:
-                    email = self.input("ใส่อีเมลที่ใช้ในบัญชีนี้ : ").strip().lower()
-                    if isEmpty(email):
-                        raise Exception('❌ อีเมลไม่ถูกต้องโปรดลองใหม่อีกครั้ง')
-                    elif "@" not in email: # ต้องมี @ 
-                        raise Exception(f'❌ "{email}" ไม่ใช้อีเมลโปรดลองใหม่อีกครั้ง')
-                    spilt = email.split('@') # หั่น email ออกจะได้ ['....' , '....'] el1 คือชื่อ , el2 คืออีเมลของบริษัทหรือองค์กรอะไรเราจะเช็คที่ el2
-                    if spilt[0] == '' or spilt[1] == '': # ถ้าใส่ el1 หรือ el2 เป็นค่าว่างเปล่า 
-                        raise Exception(f'❌ "{email}" ไม่ใช้อีเมลโปรดลองใหม่อีกครั้ง')
-                    checkEmail = '@' + spilt[1] # เติม '@' ใน el2 จะได้ประเภทของ email เพื่อนำไปเช็ค 
-                    if checkEmail in ("@gmail.com" , "@yahoo.com" , "@outlook.com",  "@outlook.co.th" , "@hotmail.com" , "@ku.th" , "@live.ku.th" , "@icloud.com" , "@protonmail.com" , "@zoho.com" , "@aol.com"):
-                        newUser['email'] = email
-                    else:
-                        raise Exception(f'❌ "{email}" ไม่ใช้อีเมลโปรดลองใหม่อีกครั้ง')
-                except Exception as err:
-                    self.print(err.__str__() , style='red')
-            while not bool(newUser["password"]):
-                symbols = ['!', '"', '#', '$', '%', '&', "'", '(', ')', '*', '+', ',', '-', '.', '/',':', ';', '<', '=', '>', '?', '@' , '{', '|', '}', '~' , '[', '\\', ']', '^', '_', '`']
-                isSymbol = False
-                try:
-                    password = self.input("ตั้งรหัสผ่าน : ").strip()
-                    for letter in password:
-                        if letter in symbols:
-                            isSymbol = True
-                    if not isSymbol:
-                        raise Exception(f'❗ ต้องมีสัญลักษณ์พิเศษอย่างน้อย 1 ตัวในการตั้งรหัสผ่านสามารถใช้สัญลักษณ์ได้ดังนี้: {" ".join(symbols)}')
-                    if isEmpty(password):
-                        raise Exception('❌ รหัสผ่านผู้ใช้งานไม่ถูกต้องโปรดลองใหม่อีกครั้ง')
-                    elif len(password) < self.__PASSWORD_LENGTH__:
-                        raise Exception(f'❌ ความยาวของรหัสผ่านต้องมีความยาว {self.__PASSWORD_LENGTH__} ตัวขึ้นไป')
-                    else:
-                        confirmPassword = self.input("ยืนยันรหัสผ่าน : ").strip()
-                        if confirmPassword == password:
-                            newUser['password'] = password
-                        elif confirmPassword != password:
-                            raise Exception(f'รหัสผ่านที่ยืนยันไม่ถูกต้องกับรหัสผ่านที่ตั้งโปรดตั้งรหัสผ่านให้ตรงกัน')
-                except Exception as err:
-                    self.print(err.__str__() , style='red')
-            while not bool(newUser["position"]):
-                allPositions:List[str] = []
-                self.print(f'💬 โปรดเลือกตำแหน่งงานในร้านอาหารของที่คุณทำงานอยู่:' , end=" ")
-                for key in self.__POSITIONS__:
-                    allPositions.extend(self.__POSITIONS__[key])
-                self.print(" , ".join(allPositions))
-                try:
-                    selectedPosition = self.input("ตำแหน่งงานหรือหน้าที่ของคุณคือ : ").strip()
-                    if isEmpty(selectedPosition):
-                        raise Exception('❌ คุณไม่ได้ใส่ตำแหน่งงานของคุณโปรดกรอกตำแหน่งงานของคุณ')
-                    elif selectedPosition not in allPositions:
-                        raise Exception(f'❌ ตำแหน่ง "{selectedPosition}" ไม่มีอยู่ในร้านอาหารของเราโปรดลองใหม่อีกครั้ง')
-                    else:
-                        newUser['position'] = selectedPosition
-                except Exception as err:
-                    self.print(err.__str__() , style='red')
-        else: # เมื่อออกจาก while loop เสร็จ 
-            # แสดงหน้า loading
-            self.__loading__(isCreate=True)
-            # เพื่มข้อมูลผู้ใช้งานคนใหม่
-            Users.addUser(newUser) 
-            return self.__login__() # เรียกใช้ method login เพิ่อกลับไปหน้า login 
+    
+        while not bool(newUser["name"]):
+            try:
+                name = self.input("ตั้งชื่อผู้ใช้งาน : ").strip()
+                if isEmpty(name):
+                    raise Exception('❌ ชื่อผู้ใช้งานไม่ถูกต้องโปรดลองใหม่อีกครั้ง')
+                elif len(name) > self.__WORD_LENGTH__:
+                    raise Exception('❌ ชื่อผู้ใช้งานของคุณมีความยาวมากเกินไป')
+                elif len(name) <= self.__NAME_LENGTH__:
+                    raise Exception('❌ ชื่อผู้ใช้งานของคุณมีสั้นเกินไป')
+                else:
+                    newUser['name'] = name
+            except Exception as err:
+                self.print(err.__str__() , style='red')
+                
+        while not bool(newUser["email"]):
+            try:
+                email = self.input("ใส่อีเมลที่ใช้ในบัญชีนี้ : ").strip().lower()
+                if isEmpty(email):
+                    raise Exception('❌ อีเมลไม่ถูกต้องโปรดลองใหม่อีกครั้ง')
+                elif "@" not in email: # ต้องมี @ 
+                    raise Exception(f'❌ "{email}" ไม่ใช้อีเมลโปรดลองใหม่อีกครั้ง')
+                spilt = email.split('@') # หั่น email ออกจะได้ ['....' , '....'] el1 คือชื่อ , el2 คืออีเมลของบริษัทหรือองค์กรอะไรเราจะเช็คที่ el2
+                if spilt[0] == '' or spilt[1] == '': # ถ้าใส่ el1 หรือ el2 เป็นค่าว่างเปล่า 
+                    raise Exception(f'❌ "{email}" ไม่ใช้อีเมลโปรดลองใหม่อีกครั้ง')
+                checkEmail = '@' + spilt[1] # เติม '@' ใน el2 จะได้ประเภทของ email เพื่อนำไปเช็ค 
+                if checkEmail in ("@gmail.com" , "@yahoo.com" , "@outlook.com",  "@outlook.co.th" , "@hotmail.com" , "@ku.th" , "@live.ku.th" , "@icloud.com" , "@protonmail.com" , "@zoho.com" , "@aol.com"):
+                    newUser['email'] = email
+                else:
+                    raise Exception(f'❌ "{email}" ไม่ใช้อีเมลโปรดลองใหม่อีกครั้ง')
+            except Exception as err:
+                self.print(err.__str__() , style='red')
+                
+        while not bool(newUser["password"]):
+            symbols = ['!', '"', '#', '$', '%', '&', "'", '(', ')', '*', '+', ',', '-', '.', '/',':', ';', '<', '=', '>', '?', '@' , '{', '|', '}', '~' , '[', '\\', ']', '^', '_', '`']
+            isSymbol = False
+            try:
+                password = self.input("ตั้งรหัสผ่าน : ").strip()
+                for letter in password:
+                    if letter in symbols:
+                        isSymbol = True
+                if not isSymbol:
+                    raise Exception(f'❗ ต้องมีสัญลักษณ์พิเศษอย่างน้อย 1 ตัวในการตั้งรหัสผ่านสามารถใช้สัญลักษณ์ได้ดังนี้: {" ".join(symbols)}')
+                if isEmpty(password):
+                    raise Exception('❌ รหัสผ่านผู้ใช้งานไม่ถูกต้องโปรดลองใหม่อีกครั้ง')
+                elif len(password) < self.__PASSWORD_LENGTH__:
+                    raise Exception(f'❌ ความยาวของรหัสผ่านต้องมีความยาว {self.__PASSWORD_LENGTH__} ตัวขึ้นไป')
+                else:
+                    confirmPassword = self.input("ยืนยันรหัสผ่าน : ").strip()
+                    if confirmPassword == password:
+                        newUser['password'] = password
+                    elif confirmPassword != password:
+                        raise Exception(f'รหัสผ่านที่ยืนยันไม่ถูกต้องกับรหัสผ่านที่ตั้งโปรดตั้งรหัสผ่านให้ตรงกัน')
+            except Exception as err:
+                self.print(err.__str__() , style='red')
+                
+        while not bool(newUser["position"]):
+            allPositions:List[str] = []
+            self.print(f'💬 โปรดเลือกตำแหน่งงานในร้านอาหารของที่คุณทำงานอยู่:' , end=" ")
+            for key in self.__POSITIONS__:
+                allPositions.extend(self.__POSITIONS__[key])
+            self.print(" , ".join(allPositions))
+            try:
+                selectedPosition = self.input("ตำแหน่งงานหรือหน้าที่ของคุณคือ : ").strip()
+                if isEmpty(selectedPosition):
+                    raise Exception('❌ คุณไม่ได้ใส่ตำแหน่งงานของคุณโปรดกรอกตำแหน่งงานของคุณ')
+                elif selectedPosition not in allPositions:
+                    raise Exception(f'❌ ตำแหน่ง "{selectedPosition}" ไม่มีอยู่ในร้านอาหารของเราโปรดลองใหม่อีกครั้ง')
+                else:
+                    newUser['position'] = selectedPosition
+            except Exception as err:
+                self.print(err.__str__() , style='red')
+
+        # แสดงหน้า loading
+        self.__loading__(isCreate=True)
+        # เพื่มข้อมูลผู้ใช้งานคนใหม่
+        Users.addUser(newUser) 
+        return self.__login__() # เรียกใช้ method login เพิ่อกลับไปหน้า login 
     
     #? method บัญชีผู้ใช้งานออกจากระบบ
     def __logout__(self) -> bool:
@@ -415,7 +415,7 @@ class Configuration(Date , Console):
                     self.print('ปิดโปรแกรม')
                     exit()
                 else:
-                    raise Warning(f'❌ ไม่มี "{selected}" ในตัวเลือกของการถาม โปรดพิมพ์แค่ 1 หรือ 2 เท่านั้น')
+                    raise Warning(f'❌ ไม่มี "{selected}" ในตัวเลือกของการถาม โปรดพิมพ์แค่ 1-3 เท่านั้น')
             except ValueError:
                 self.print('❌ โปรดพิมพ์เป็นตัวเลขเท่านั้น' , style='red')
             except Warning as err:
@@ -433,9 +433,8 @@ class Configuration(Date , Console):
                 "position": None,
                 "AccessPermissions": {}
             }
-            self.__saveUserData__ = None
         #* เมื่อมีการส่งข้อมูลผู้ใช้งานมาที่ parameter user 
-        elif user != None:
+        else:
             for key in user: # loop แล้วดึง key จาก property user ออกมา
                 self.__user__[key] = user[key] # ให้ property ใน attribute user มีค่าเป็นข้อมูลของผู้ใช้งานที่ส่งมา
     
@@ -469,9 +468,9 @@ class Configuration(Date , Console):
                 self.__user__["AccessPermissions"][key] = False # ไม่ให้มีสิทธิ์ใช้งานโปรแกรม(คำสั่งหลักๆ)
         
     #? method ในการบันทึกข้อมูลการทำงานต่างๆของโปรแกรม 
-    def __log__(self , text:str = "", typeOfLog: None | str = None , item: None | List[str | int] | Any = None) -> None:
+    def __log__(self , text: str = "" , typeOfLog: None | str = None , item: None | List[str | int] = None) -> None:
         userName: str = self.__user__["name"]
-        txt = f"[blue][{self.getTime(realTime=True)}][/]\t "
+        txt = f"[{self.getTime(log=True)}]\t\t"
         
         if bool(text) and (typeOfLog is None or typeOfLog == "general" and item is None):
             txt += f"{text}"
@@ -491,11 +490,11 @@ class Configuration(Date , Console):
             txt += f"{text}"
         elif typeOfLog == self.WARN:
             txt += f"{userName} พยายามเข้าถึงคำสั่งที่ไม่ได้รับอณุญาติให้ใช้งาน"
-        # เก็บไว้ใน array
+        # เก็บไว้ใน list
         self.__LOG__.append(txt)
     
     #? method แสดง loading 
-    def __loading__(self , isLogin:bool = False , isLogout:bool = False , isCreate:bool = False , isDelete:bool = False) -> None:
+    def __loading__(self , isLogin:bool = False , isLogout:bool = False , isCreate:bool = False , isDelete:bool = False , text:str = '') -> None:
         self.clear() # ล้างหน้า terminal
         # loading หน้า login
         if isLogin:
@@ -528,7 +527,7 @@ class Configuration(Date , Console):
             else:
                 self.print('✓ ลบรายการเมนูอาหารทั้งหมดเสร็จสิ้นเรียบร้อย' , style='green')
         else:
-            with self.status("[cyan]กำลังตรวจสอบ[/]" , spinner='arc' , speed=1):
+            with self.status(f"[cyan]{text}[/]" , spinner='arc' , speed=1):
                 for i in range(7):
                     sleep(.3)
 
@@ -625,10 +624,6 @@ class Program(Configuration , Date , Console):
     __result__: int = 0 # ยอดเงินรวมจำนวนล่าสุดของ __currentOrder__
     __totalMoney__: List[int] = [] # ยอดเงินรวมทั้งหมดใน 1วัน เก็บเป็นยอดสั่งอาหารเรียงแต่ละรายการ
     
-    #* attributes สร้างตาราง 
-    __menuTable__: Table = None
-    __commandsTable__: Table = None
-    
     #? method แรกที่จะรันคำสั่งเมื่อเรียกใช้งาน class Program
     def __init__(self , menu:List[Dict[str , str | int]] ) -> None:
         super().__init__() # set ค่า default parameters ใน superclass
@@ -644,8 +639,8 @@ class Program(Configuration , Date , Console):
         self.__menu__ = menu     
         # นำเข้า property(ค่า value) ใน dict เรียงเก็บไว้ใน list ตอนเริ่มโปรแกรม
         self.__setElements__() 
-        self.showLogo(path='./img/logo.png') # แสดง logo ร้านอาหาร
-        self.greeting(h=self.time.hour , userName=self.__user__["name"]) # ทักทายผู้ใช้งาน
+        # self.showLogo(path='./img/logo.png') # แสดง logo ร้านอาหาร
+        # self.greeting(hour=self.time.hour , userName=self.__user__["name"]) # ทักทายผู้ใช้งาน
         self.showCommands() # แสดงคำสั่ง
       
     #? (method หลัก) ในการเปลี่ยนค่าข้อมูลใน foodList , idList เมื่อในรายการในเมนู (menu) มีการเปลี่ยนแลง ตัวแปรทั้ง 2 ตัวนี้จะเปลี่ยนตามด้วย
@@ -680,57 +675,61 @@ class Program(Configuration , Date , Console):
     #? method แสดงเมนูอาหาร
     def showMenu(self) -> None:
         # ตารางเมนูอาหาร
-        self.__menuTable__ = Table(title='เมนูอาหาร' , title_style='yellow italic', show_lines=True, show_footer=True, box=HEAVY_EDGE)
-        allAmount: int = sum([item["amount"] for item in self.__menu__])
+        menuTable = Table(title='เมนูอาหาร' , title_style='yellow italic', show_lines=True, show_footer=True, box=HEAVY_EDGE)
+        allAmount: int = sum([item["remain"] for item in self.__menu__])
         # สร้าง ...
-        self.__menuTable__.add_column(header='ลำดับ' , footer='รวม' , justify='center')
-        self.__menuTable__.add_column(header='อาหาร', footer=f'{self.__menu__.__len__()} เมนู' , justify='center')
-        self.__menuTable__.add_column(header='ราคา', footer= '-', justify='center' , style='green')
-        self.__menuTable__.add_column(header='จำนวน', footer= f'{allAmount} จำนวน', justify='center' , style='light_sky_blue1')
-        self.__menuTable__.add_column(header='รหัสสินค้า', footer= '-', justify='center' , style='light_goldenrod1')
+        menuTable.add_column(header='ลำดับ' , footer='รวม' , justify='center')
+        menuTable.add_column(header='อาหาร', footer=f'{self.__menu__.__len__()} เมนู' , justify='center')
+        menuTable.add_column(header='ราคา', footer= '-', justify='center' , style='green')
+        menuTable.add_column(header='จำนวน', footer= f'{allAmount} จำนวน', justify='center' , style='light_sky_blue1')
+        menuTable.add_column(header='รหัสสินค้า', footer= '-', justify='center' , style='light_goldenrod1')
         for n , item in enumerate(self.__menu__):
             # เพิ่ม row ใหม่ตามเมนูที่มีอยู่ในปัจจุบัน
-            self.__menuTable__.add_row(f'{n + 1}' ,f'[strike]{item["name"]}[/] [orange3](หมด)[/]' if item["amount"] == 0 else item["name"] , 
-                f'{item["price"]} บาท' , f'{item["amount"]}' ,f'{item["id"]}') 
+            menuTable.add_row(f'{n + 1}' ,f'[strike]{item["name"]}[/] [orange3](หมด)[/]' if item["remain"] == 0 else item["name"] , 
+                f'{item["price"]} บาท' , f'{item["remain"]}' ,f'{item["id"]}') 
         # แสดงตารางเมนูถ้าไม่พบข้อมูลสินค้าไม่ต้องแสดงตาราง 
         if self.__menu__.__len__() == 0:
             self.print(f'🌟 ตอนนี้ไม่มีรายการสินค้าใดๆโปรดเพิ่มสินค้าก่อนแสดงรายการเมนู!')
         else:
             self.line()
-            self.print(self.__menuTable__)
+            self.print(menuTable)
             self.line()
     
     #? method แสดงคำสั่ง
     def showCommands(self) -> None:
         # ตารางคำสั่ง
-        self.__commandsTable__ = Table(title='คำสั่งของโปรแกรม' , caption='เลือกพิมพ์คำสั่งเหล่านี้เพื่อดำเนินการ', 
+        commandsTable = Table(title='คำสั่งของโปรแกรม' , caption='เลือกพิมพ์คำสั่งเหล่านี้เพื่อดำเนินการ', 
         title_style='purple italic', caption_style='purple italic', box=HEAVY , leading=1)
         # สร้าง column
-        self.__commandsTable__.add_column(header='คำสั่ง' , justify='center')
-        self.__commandsTable__.add_column(header='ชื่อคำสั่งเต็ม' , justify='center')
-        self.__commandsTable__.add_column(header="ความหมายของคำสั่ง" , justify='center')
+        commandsTable.add_column(header='คำสั่ง' , justify='center')
+        commandsTable.add_column(header='ชื่อคำสั่งเต็ม' , justify='center')
+        commandsTable.add_column(header="ความหมายของคำสั่ง" , justify='center')
         # ความหมายของคำสั่ง
         commandsTu = ("ออกจากโปรแกรม" , "แสดงคำสั่ง" , "แสดงเมนูอาหาร" , "สั่งซื้ออาหาร" , "เพิ่มรายการสินค้า" , "ลบรายการสินค้า" , "แสดง log ของโปรแกรม" ,"แก้ไขชื่อรายการสินค้า" , "ลบรายการสินค้าทั้งหมด" , "ออกจากบัญชี")
         # เลข index ที่อยู่ตรงกลางของ __KEYWORDS__ ระหว่าง ชื่อคำสั่งย่อ และ คำสั่งเต็ม
         idx = int(self.__KEYWORDS__.__len__() / 2)
         for i in range(idx): # วน loop เพิ่ม row
-            self.__commandsTable__.add_row(f'[dark_magenta]{self.__KEYWORDS__[i]}' , f'[blue_violet]{self.__KEYWORDS__[idx + i]}' , f'{commandsTu[i]}')
+            commandsTable.add_row(f'[dark_magenta]{self.__KEYWORDS__[i]}' , f'[blue_violet]{self.__KEYWORDS__[idx + i]}' , f'{commandsTu[i]}')
         self.__PROGRAMSTATUS__["isFirstCreateTable"] = False
         # แสดงตารางออกมา
         self.line()
-        self.print(self.__commandsTable__)
+        self.print(commandsTable)
         self.line()
     
     #? method แสดง logo ของร้านอาหาร
-    def showLogo(self , path: str) -> None:
+    def showLogo(self , path:str = './img/logo.png') -> None:
         logo = AsciiArt.from_image(path)
         logo.to_terminal() 
         
     #? method ในการแสดงข้อมูลการทำงานต่างๆของโปรแกรม 
-    def __showLog__(self) -> None:
+    def __showLog__(self , path: str = './log/log.txt') -> None:
+        # สั่งเขียนไฟล์บันทึก
+        with open(file=path , mode='w' , encoding='utf-8') as logFile:
+            print(*self.__LOG__ , sep='\n' , file=logFile)
         self.rule(title='[yellow bold]บันทึกของโปรแกรม[/]')
         self.print(*self.__LOG__ , sep='\n')
         self.rule()
+        
     
     #? แสดงข้อความแจ้งเตือนทุกครั้งตอนเรียกใช้ methods
     def __notify__(self , context: str , *args: Tuple[str] | None) -> None: # แสดงข้อความเมื่อเรียกคำสั่งที่พิมพ์ไป
@@ -778,8 +777,8 @@ class Program(Configuration , Date , Console):
         details.add_column('รวม' , justify='center')
         # วน loop เพื่ม rows
         for n , item in enumerate(order): # loop ตามจำนวนข้อมูลที่ส่งมาจะได้ dictionary ที่เก็บอยู่ใน list
-            totalAmount += item["amount"]
-            details.add_row(f'{n + 1}' , item['name'] , f'{item["amount"]}' , f'{item["price"]}' , f'{item["total"]:,} บาท')
+            totalAmount += item["remain"]
+            details.add_row(f'{n + 1}' , item['name'] , f'{item["remain"]}' , f'{item["price"]}' , f'{item["total"]:,} บาท')
         # เนื้อหาที่จะนำไปแสดงใน terminal
         contents = Group(
             Panel('\nอาหารที่สั่งไปคือ: ' , title=f"หมายเลขอ้างอิงการสั่งซื้อ [deep_sky_blue1 on grey3]{code}[/]" , 
@@ -826,9 +825,9 @@ class Program(Configuration , Date , Console):
                 money = 0
                 content = ''
                 for n , item in enumerate(self.__currentOrder__):
-                    totalAmount += item["amount"]
-                    money += (item["price"] * item["amount"])
-                    content += f'{n + 1}.) {item["name"]} จำนวน [steel_blue3]{item["amount"]}[/] อย่าง\n'
+                    totalAmount += item["remain"]
+                    money += (item["price"] * item["remain"])
+                    content += f'{n + 1}.) {item["name"]} จำนวน [steel_blue3]{item["remain"]}[/] อย่าง\n'
                 content += f'\nจำนวนอาหารรวมทั้งหมด [steel_blue3]{totalAmount}[/] อย่าง\n'
                 content += f'ราคารวมทั้งหมด [green4 bold]{money:,}[/] บาท'
                 self.print('\n' , Panel(content, title='[dark_blue]อาหารที่คุณสั่งไปคือ[/]' , expand=False , box=SQUARE , padding=1) , '\n')
@@ -840,7 +839,7 @@ class Program(Configuration , Date , Console):
                 # loop รายชื่ออาหารที่ทำการสั่งมาทั้งหมด     
                 for i in range(self.__currentOrder__.__len__()):  
                     # ราคาอาหารทั้งหมดของอาหารนั้น = จำนวนสินค้า x กับราคาสินค้าที่อยู่ในเมนู
-                    self.__currentOrder__[i]["total"] = self.__currentOrder__[i]["amount"] * self.__currentOrder__[i]["price"]
+                    self.__currentOrder__[i]["total"] = self.__currentOrder__[i]["remain"] * self.__currentOrder__[i]["price"]
                     # ผลรวมจำนวนเงินที่ต้องจ่าย
                     self.__result__ += self.__currentOrder__[i]["total"]
                     self.__totalMoney__.append(self.__currentOrder__[i]["total"])
@@ -876,18 +875,18 @@ class Program(Configuration , Date , Console):
                 self.print('ไม่มีการสั่งอาหารรายการใดๆ')
     
         #* (function ย่อย) function ในการจัดการจำนวนอาหารในรายการเมนู
-        def manageItems(name: str = '', amount: int = 0, restore: bool = False) -> None:
+        def manageItems(name: str = '', remain: int = 0, restore: bool = False) -> None:
             # คืนค่าจำนวนอาหารที่สั่งไป
             if restore:
                 for order in self.__currentOrder__: # loop ข้อมูลใน order ที่สั่งเพื่อคืนจำนวนอาหารที่สั่งให้เมนู
                     idx = self.__search__(param=order["name"])
                     # คืนค่าจำนวนอาหารที่สั่งไป
-                    self.__menu__[idx]["amount"] += order["amount"]
+                    self.__menu__[idx]["remain"] += order["remain"]
             else:
                 # หาเลข index เพื่ออ้างอิงตำแหน่ง elements ใน list 
                 idx = self.__search__(param=name)
                 # ลดจำนวนอาหารตามจำนวนที่สั่งไป
-                self.__menu__[idx]["amount"] -= amount
+                self.__menu__[idx]["remain"] -= remain
                     
         #* infinity loop จนกว่าจะพิมพ์คำสั่ง "e" หรือ "end" เพื่อออกจาก loop
         while self.__PROGRAMSTATUS__["invokeMethods"]:
@@ -934,10 +933,10 @@ class Program(Configuration , Date , Console):
                             
                             #! ตรวจสอบจำนวนอาหารในร้านอาหารก่อนเพิ่มเข้ารายการ order ที่สั่งซื้อ
                             # เมื่อเช็คว่าจำนวนอาหารของอาหาร ... นั้นหมดแล้วจะไม่สามาถสั่งอาหารได้
-                            if self.__menu__[idx]["amount"] <= 0: 
+                            if self.__menu__[idx]["remain"] <= 0: 
                                 raise Exception(f'❌ ไม่สามารถดำเนินการสั่งอาหาร [bold]"{foodName}"[/] ได้เนื่องจากอาหารขายหมดแล้ว')
                             # เมื่อเช็คว่าจำนวนอาหารที่เหลือของอาหาร ... นั้นรวมกับจำนวนที่สั่งแล้วไม่เหลือเป็นจำนวนติดลบ(สั่งเกินจำนวนที่ตั้งไว้ 30 จำนวน)
-                            elif (self.__menu__[idx]["amount"] - amount) < 0:
+                            elif (self.__menu__[idx]["remain"] - amount) < 0:
                                 raise Exception(f'❌ ไม่สามารถดำเนินการสั่งอาหาร [bold]"{foodName}"[/] ได้เนื่องจากจำนวนอาหารที่สั่งมามีมากเกินกว่าจำนวนอาหารที่มีอยู่ในร้านอาหาร')
                             
                             # เช็คว่าสั่งอาหาร ... นั้นเป็นครั้งแรกหรือยัง (พึ่งเริ่มสั่งอาหารนั้น)
@@ -946,25 +945,25 @@ class Program(Configuration , Date , Console):
                                 #* เพิ่มรายการ order ที่สั่งไปได้แก่ ชื่ออาหาร , จำนวน , ราคา , จำนวนเงินทั้งหมด
                                 self.__currentOrder__.append({ 
                                     "name": foodName, # ชื่ออาหาร
-                                    "amount": amount, # จำนวนอาหาร
+                                    "remain": amount, # จำนวนอาหาร
                                     "price": self.__menu__[idx]["price"], # ราคา (เก็บราคาเริ่มต้นจากเมนูเอาไว้เพื่อใช้คำนวณ)
                                     "total": 0 # จำนวนเงินทั้งหมด
                                 })
                                 # จัดการจำนวนอาหารในเมนู (สั่งอาหารแล้วจำนวนอาหารในเมนูจะลดลง)
-                                manageItems(name=foodName , amount=amount)
+                                manageItems(name=foodName , remain=amount)
                                 self.__log__(typeOfLog=self.SELL , item=[foodName , amount]) # เก็บ log
                             # ถ้ามีชื่ออยู่ใน list ให้เพิ่มจำนวนอาหาร ... เพิ่มขึ้น   
                             elif foodName in self.__shoppingList__: 
                                 # หาเลข index ใน list ข้างใน elements คือ dict ต้องการตรวจสอบชื่อ ... ว่าอยู่ index ที่ ... ใน list เพื่อนำมาใช้อ้างอิง
                                 idx = self.__search__(param=foodName , obj=self.__currentOrder__)
                                 # ก่อนเพิ่มจำนวนอาหารที่เคยสั่งไปแล้วให้ลองเช็คจำนวน อาหารที่เคยสั่งจะมีจำนวนอาหารอยู่ รวม กับจำนวนที่พึ่งสั่ง ถ้าเกินจำนวนอาหารค่ามากสุดที่ตั้งไว้ให้ raise
-                                if (self.__currentOrder__[idx]["amount"] + amount) > self.__AMOUNT__:
+                                if (self.__currentOrder__[idx]["remain"] + amount) > self.__AMOUNT__:
                                     raise Exception(f'❌ จำนวนอาหารที่สั่งต้องไม่เกิน [bold]{self.__AMOUNT__}[/] อย่างต่อเมนู!')
                                 else:
-                                    manageItems(name=foodName , amount=amount)
+                                    manageItems(name=foodName , remain=amount)
                                     # เพิ่มจำนวนอาหารที่มีอยู่แล้วรวมกับจำนวนอาหารที่พึ่งเพิ่มไป (อัปเดตจำนวนอาหาร)
-                                    self.__currentOrder__[idx]["amount"] += amount 
-                                    self.__log__(text=f'{self.__user__["name"]} ได้สั่ง "{foodName}" เพิ่มอีก {amount} จำนวน รวมเป็น {self.__currentOrder__[idx]["amount"]}') # เก็บ log
+                                    self.__currentOrder__[idx]["remain"] += amount 
+                                    self.__log__(text=f'{self.__user__["name"]} ได้สั่ง "{foodName}" เพิ่มอีก {amount} จำนวน รวมเป็น {self.__currentOrder__[idx]["remain"]}') # เก็บ log
                             # ออกจาก loop 
                             self.__PROGRAMSTATUS__["isContinue"] = False 
                 # กรณีค้นหาแล้วไม่มีชื่ออาหาร หรือ ไม่มีรหัสสินค้า อยู่ในเมนู    
@@ -1028,7 +1027,7 @@ class Program(Configuration , Date , Console):
                                     "name": newItem,
                                     "price": pricing,
                                     "id": self.__createId__(self.__PRODUCTCODE_LENGTH__),
-                                    "amount": self.__AMOUNT__
+                                    "remain": self.__AMOUNT__
                                 })          
                                 self.print(f'[green]✓ เพิ่มเมนูอาหารใหม่เสร็จสิ้น[/]')
                                 self.print(f'🍖 จำนวนรายการอาหารที่มีทั้งหมดในตอนนี้มีอยู่ [yellow]{len(self.__menu__)}[/] เมนู')
@@ -1036,7 +1035,7 @@ class Program(Configuration , Date , Console):
                             else: 
                                 raise Exception(f'❌ ไม่สามารถใช้ชื่อ "{newItem}" ในการตั้งเมนูใหม่ได้เนื่องจากมีชื่อที่ซ้ำอยู่ในเมนูอาหารโปรดตั้งชื่อใหม่!')
                     except ValueError:
-                        self.print('[red]❌ ไม่สามารถตั้งราคาสินค้าได้ราคาสินค้าต้องตั้งเป็นตัวเลขจำนวนเต็มเท่านั้น![/]')
+                        self.print('❌ ไม่สามารถตั้งราคาสินค้าได้ราคาสินค้าต้องตั้งเป็นตัวเลขจำนวนเต็มเท่านั้น!' , style='red')
                     except Exception as err:
                         self.print(err.__str__() , style='red') 
                     else: 
@@ -1077,84 +1076,81 @@ class Program(Configuration , Date , Console):
                             "price": None,
                             "id": None
                         }
-    
-                        while (not bool(editItem["name"])) and (not bool(editItem["price"])) and (not bool(editItem["id"])):
-                            # แสดงข้อความ
-                            self.print(f'คุณเลือกรายการสินค้าที่จะแก้ไข คือ [orange1 bold]"{self.__menu__[idx]["name"]}"[/] ราคา [orange1 bold]{self.__menu__[idx]["price"]}[/] บาท รหัสสินค้าคือ [orange1 bold]{self.__menu__[idx]["id"]}[/]')
-                            self.print(f'ถ้าไม่ต้องการแก้ไขชื่ออาหารให้ใช้เครื่องหมายลบ [yellow bold](-)[/]')
-                            
-                            while not bool(editItem["name"]):
-                                try:
-                                    # ชื่ออาหารที่จะแก้ไขใหม่
-                                    changeFoodName = self.input(f'แก้ไขชื่อ จาก [orange1 bold]"{self.__menu__[idx]["name"]}"[/] เป็น --> ').strip()   
-                                    # ชื่อห้ามซ้ำกับรายการอื่นๆ
-                                    assert changeFoodName not in self.__foodList__ , '❌ ชื่อที่คุณทำการแก้ไขนั้นเป็นชื่อซ้ำอยู่ในเมนูอาหารโปรดแก้ไขชื่อที่ไม่ให้ซ้ำกัน'
-                                    # ไม่ใส่ชื่อ
-                                    assert not(changeFoodName == '' or changeFoodName.__len__() == 0) , '❌ ห้ามใส่ชื่อว่างเปล่า!'
-                                    if changeFoodName.isdigit() or changeFoodName[0].isdigit():
-                                        raise Exception('❌ ไม่สามารถตั้งชื่อขึ้นต้นด้วยตัวเลขได้หรือตั้งชื่อเป็นตัวเลขได้!')
-                                    elif changeFoodName == '-':
-                                        changeFoodName = self.__menu__[idx]["name"]
-                                        notEdit += 1
-                                except AssertionError as err:
-                                    self.print(err.__str__() , style='red')
-                                except Exception as err:
-                                    self.print(err.__str__() , style='red')
-                                else:
-                                    editItem["name"] = changeFoodName
-                            # แสดงข้อความ    
-                            self.print('💬 ราคาสินค้าสามารถตั้งอยู่ในช่วงราคา 1 ถึง 1,000 บาท') 
-                            self.print(f'ถ้าไม่ต้องการแก้ไขราคาอารให้ใช้เครื่องหมายลบ [yellow bold](-)[/]')
-                            while not bool(editItem["price"]):
-                                try:
-                                    # ราคาที่จะแก้ไขใหม่
-                                    changePrice = self.input(f'แก้ไขราคา จาก [orange1 bold]{self.__menu__[idx]["price"]}[/] บาท เป็น --> ').strip()
-                                    if changePrice == '-':
-                                        changePrice = self.__menu__[idx]["price"]
-                                        notEdit += 1
-                                    else:
-                                        changePrice = int(changePrice)
-                                    #! ตรวจสอบความถูกต้อง
-                                    # ยอดเงินต้องไม่เกิน 1000 บาท และ ต้องไม่ติดลบและไม่เป็นศูนย์
-                                    if (changePrice > self.__MAX__ or changePrice <= self.__MIN__) or (changePrice not in range(self.__MIN__ , self.__MAX__)): 
-                                        raise Exception('❌ ราคาสินค้าต้องตั้งอยู่ในราคาไม่เกิน 1,000 บาทเท่านั้น!')
-                                except ValueError:
-                                    self.print('[red]❌ ราคาสินค้าและรหัสสินค้าต้องตั้งเป็นตัวเลขจำนวนเต็มเท่านั้น![/]')
-                                except Exception as err:
-                                    self.print(err.__str__() , style='red')
-                                else:
-                                    editItem["price"] = changePrice
-                            # แสดงข้อความ
-                            self.print(f'💬 รหัสสินค้าต้องตั้งเป็นเลขจำนวนเต็มจำนวน {self.__PRODUCTCODE_LENGTH__} ตัว')
-                            self.print(f'ถ้าคุณไม่ต้องการตั้งรหัสสินค้าเองให้ใส่เครื่องหมายสแลช [yellow bold](/)[/] หรือถ้าต้องการใช้รหัสสินค้าเดิมให้ใส่เครื่องหมายลบ [yellow bold](-)[/]')
-                            while not bool(editItem["id"]):
-                                try:
-                                    # เลข id ที่จะแก้ไข
-                                    changeId = self.input(f'แก้ไขรหัสสินค้า จากรหัส [orange1 bold]"{self.__menu__[idx]["id"]}"[/] เป็น --> ').strip() 
-                                    #! ตรวจสอบความถูกต้อง
-                                    if changeId.__len__() != self.__PRODUCTCODE_LENGTH__ and changeId != '-' and changeId != '/':
-                                        raise Exception(f'❌ ต้องตั้งรหัสสินค้าในความยาวของ {self.__PRODUCTCODE_LENGTH__} เท่านั้น!')
-                                    elif changeId == '-':
-                                        changeId = self.__menu__[idx]["id"]
-                                        notEdit += 1
-                                    elif changeId == '/':
-                                        changeId = self.__createId__(length=self.__PRODUCTCODE_LENGTH__)
-                                except Exception as err:
-                                    self.print(err.__str__() , style='red')
-                                else:
-                                    editItem["id"] = changeId
-                        else:
-                            #* แก้ไขข้อมูล dictionary ในเมนู
-                            for key in editItem:                                    
-                                self.__menu__[idx][key] = editItem[key]
-                            # เปลี่ยนแปลงค่า li ใหม่     
-                            self.__setElements__()    
-                            if notEdit == 3:
-                                self.print('[indian_red1]ไม่มีการแก้ไขข้อมูลใดๆ[/]')
-                                self.__log__(typeOfLog=self.GENERAL , text=f'{self.__user__["name"]} ไม่ได้มีการแก้ไขค่าข้อมูลใดๆในรายการเมนูอาหาร')
+                        # แสดงข้อความ
+                        self.print(f'คุณเลือกรายการสินค้าที่จะแก้ไข คือ [orange1 bold]"{self.__menu__[idx]["name"]}"[/] ราคา [orange1 bold]{self.__menu__[idx]["price"]}[/] บาท รหัสสินค้าคือ [orange1 bold]{self.__menu__[idx]["id"]}[/]')
+                        self.print(f'ถ้าไม่ต้องการแก้ไขชื่ออาหารให้ใช้เครื่องหมายลบ [yellow bold](-)[/]')            
+                        while not bool(editItem["name"]):
+                            try:
+                                # ชื่ออาหารที่จะแก้ไขใหม่
+                                changeFoodName = self.input(f'แก้ไขชื่อ จาก [orange1 bold]"{self.__menu__[idx]["name"]}"[/] เป็น --> ').strip()   
+                                # ชื่อห้ามซ้ำกับรายการอื่นๆ
+                                assert changeFoodName not in self.__foodList__ , '❌ ชื่อที่คุณทำการแก้ไขนั้นเป็นชื่อซ้ำอยู่ในเมนูอาหารโปรดแก้ไขชื่อที่ไม่ให้ซ้ำกัน'
+                                # ไม่ใส่ชื่อ
+                                assert not(changeFoodName == '' or changeFoodName.__len__() == 0) , '❌ ห้ามใส่ชื่อว่างเปล่า!'
+                                if changeFoodName.isdigit() or changeFoodName[0].isdigit():
+                                    raise Exception('❌ ไม่สามารถตั้งชื่อขึ้นต้นด้วยตัวเลขได้หรือตั้งชื่อเป็นตัวเลขได้!')
+                                elif changeFoodName == '-':
+                                    changeFoodName = self.__menu__[idx]["name"]
+                                    notEdit += 1
+                            except AssertionError as err:
+                                self.print(err.__str__() , style='red')
+                            except Exception as err:
+                                self.print(err.__str__() , style='red')
                             else:
-                                self.print('[green]✓ แก้ไขรายการอาหารเสร็จสิ้น[/]') 
-                                self.__log__(typeOfLog=self.EDIT , item=[oldName , self.__menu__[idx]["name"]]) 
+                                editItem["name"] = changeFoodName
+                        # แสดงข้อความ    
+                        self.print('💬 ราคาสินค้าสามารถตั้งอยู่ในช่วงราคา 1 ถึง 1,000 บาท') 
+                        self.print(f'ถ้าไม่ต้องการแก้ไขราคาอารให้ใช้เครื่องหมายลบ [yellow bold](-)[/]')
+                        while not bool(editItem["price"]):
+                            try:
+                                # ราคาที่จะแก้ไขใหม่
+                                changePrice = self.input(f'แก้ไขราคา จาก [orange1 bold]{self.__menu__[idx]["price"]}[/] บาท เป็น --> ').strip()
+                                if changePrice == '-':
+                                    changePrice = self.__menu__[idx]["price"]
+                                    notEdit += 1
+                                else:
+                                    changePrice = int(changePrice)
+                                #! ตรวจสอบความถูกต้อง
+                                # ยอดเงินต้องไม่เกิน 1000 บาท และ ต้องไม่ติดลบและไม่เป็นศูนย์
+                                if (changePrice > self.__MAX__ or changePrice <= self.__MIN__) or (changePrice not in range(self.__MIN__ , self.__MAX__)): 
+                                    raise Exception('❌ ราคาสินค้าต้องตั้งอยู่ในราคาไม่เกิน 1,000 บาทเท่านั้น!')
+                            except ValueError:
+                                self.print('[red]❌ ราคาสินค้าและรหัสสินค้าต้องตั้งเป็นตัวเลขจำนวนเต็มเท่านั้น![/]')
+                            except Exception as err:
+                                self.print(err.__str__() , style='red')
+                            else:
+                                editItem["price"] = changePrice
+                        # แสดงข้อความ
+                        self.print(f'💬 รหัสสินค้าต้องตั้งเป็นเลขจำนวนเต็มจำนวน {self.__PRODUCTCODE_LENGTH__} ตัว')
+                        self.print(f'ถ้าคุณไม่ต้องการตั้งรหัสสินค้าเองให้ใส่เครื่องหมายสแลช [yellow bold](/)[/] หรือถ้าต้องการใช้รหัสสินค้าเดิมให้ใส่เครื่องหมายลบ [yellow bold](-)[/]')
+                        while not bool(editItem["id"]):
+                            try:
+                                # เลข id ที่จะแก้ไข
+                                changeId = self.input(f'แก้ไขรหัสสินค้า จากรหัส [orange1 bold]"{self.__menu__[idx]["id"]}"[/] เป็น --> ').strip() 
+                                #! ตรวจสอบความถูกต้อง
+                                if changeId.__len__() != self.__PRODUCTCODE_LENGTH__ and changeId != '-' and changeId != '/':
+                                    raise Exception(f'❌ ต้องตั้งรหัสสินค้าในความยาวของ {self.__PRODUCTCODE_LENGTH__} เท่านั้น!')
+                                elif changeId == '-':
+                                    changeId = self.__menu__[idx]["id"]
+                                    notEdit += 1
+                                elif changeId == '/':
+                                    changeId = self.__createId__(length=self.__PRODUCTCODE_LENGTH__)
+                            except Exception as err:
+                                self.print(err.__str__() , style='red')
+                            else:
+                                editItem["id"] = changeId
+                                    
+                        #* แก้ไขข้อมูล dictionary ในเมนู
+                        for key in editItem:                                    
+                            self.__menu__[idx][key] = editItem[key]
+                        # เปลี่ยนแปลงค่า li ใหม่     
+                        self.__setElements__()    
+                        if notEdit == 3:
+                            self.print('ไม่มีการแก้ไขข้อมูลใดๆ' , style='indian_red1')
+                            self.__log__(typeOfLog=self.GENERAL , text=f'{self.__user__["name"]} ไม่ได้มีการแก้ไขค่าข้อมูลใดๆในรายการเมนูอาหาร')
+                        else:
+                            self.print('✓ แก้ไขรายการอาหารเสร็จสิ้น' , style='green') 
+                            self.__log__(typeOfLog=self.EDIT , item=[oldName , self.__menu__[idx]["name"]]) 
             except Exception as err:
                 self.print(err.__str__() , style='red')
                 
@@ -1250,7 +1246,7 @@ class Program(Configuration , Date , Console):
         # loop ข้อมูลทั้งหมด จาก allOrders
         for item in orders:
             foodName = item["name"] # เก็บชื่ออาหาร
-            amount = item["amount"] # เก็บจำนวนของอาหารที่สั่ง
+            amount = item["remain"] # เก็บจำนวนของอาหารที่สั่ง
             li = [foodName for i in range(amount)] # loop ตามจำนวนครั้ง ของ value ทุกๆครั้งที่ loop จะคืนค่า(เพิ่ม) ชื่ออาหารให้ li
             mo.extend(li) # เพิ่ม li ให้ mo เพื่อนำไปหาฐานนิยมต่อไป
             quantity += amount # บวกจำนวนเพิ่มแต่ละอาหาร
@@ -1278,9 +1274,9 @@ class Program(Configuration , Date , Console):
                 command = self.input("[medium_turquoise]พิมพ์คำสั่งเพื่อดำเนินการต่อไป : [/]").lower().strip()
                 #! ตรวจสอบความถูกต้อง
                 # ไม่ได้พิมพิมพ์คำสั่ง
-                assert (command != "" or len(command) == 0) , '[bold underline red on grey0]Error:[/][red] คุณไม่ได้ป้อนคำสั่งโปรดพิมพ์คำสั่ง[/]' # ถ้าไม่ได้พิมพ์คำสั่งอะไรมา
+                assert (command != "" or len(command) == 0) , 'คุณไม่ได้ป้อนคำสั่งโปรดพิมพ์คำสั่ง' # ถ้าไม่ได้พิมพ์คำสั่งอะไรมา
                 # ไม่ใช้คำสั่ง False: ไม่มีคำสั่งที่ค้นหา , True: เป็นคำสั่ง
-                assert self.__isKeyword__(command) , f'[bold underline red on grey0]Error:[/][red] ไม่รู้จำคำสั่ง [bold]"{command}"[/] โปรดเลือกใช้คำสั่งที่มีระบุไว้[/]'
+                assert self.__isKeyword__(command) , f'ไม่รู้จำคำสั่ง [bold]"{command}"[/] โปรดเลือกใช้คำสั่งที่มีระบุไว้'
                 
                 #? เปลี่ยนสถานะ attribute ตัวนี้ให้เป็น True หมายถึงกำลังทำการเรียกใช้ methods ของโปรแกรม
                 self.__PROGRAMSTATUS__["invokeMethods"] = True
@@ -1334,11 +1330,11 @@ class Program(Configuration , Date , Console):
                         user = super().__getUser__() # รอรับข้อมูลผู้ใช้งาน
                         super().__setUser__(user) # ตั้งค่าผู้ใช้งาน
                         super().__setPermissions__(user) # ตั้งค่าสิทธิ์การใช้งาน
-                        self.showLogo(path='./img/logo.png') # แสดง logo ร้านอาหาร
-                        self.greeting(h=self.time.hour , userName=self.__user__["name"]) # ทักทายผู้ใช้งาน
+                        self.showLogo() # แสดง logo ร้านอาหาร
+                        self.greeting(hour=self.time.hour , userName=self.__user__["name"]) # ทักทายผู้ใช้งาน
                         self.showCommands() # แสดงคำสั่ง
             except AssertionError as err:
-                self.print(err.__str__())
+                self.print(f'[bold underline red on grey0]Error:[/] [red]{err.__str__()}[/]')
             except Exception as err:
                 self.print(err.__str__())
             finally:
