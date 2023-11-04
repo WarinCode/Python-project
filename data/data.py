@@ -9,6 +9,7 @@ from random import shuffle
 # id: เก็บรหัสสินค้า
 # remain: จำนวนอาหาร
 
+
 class Menu:
     __listMenu__ = [
         {"name": "สลัดผักมะเขือเทศและเนยสด", "price": 65, "id": 518, "remain": 30},
@@ -199,82 +200,83 @@ class Menu:
 # password : รหัสผ่านผู้ใช้งาน
 # position : ตำแหน่งงานที่ทำงานอยู่ในร้านอาหาร
 
+
 class Users:
     __usersData__ = [
         {
             "name": "john",
-            "email": "john@email.com",
+            "email": "john@gmail.com",
             "password": "111",
             "position": "ผู้จัดการ",
         },
         {
             "name": "david",
-            "email": "david@email.com",
+            "email": "david@gmail.com",
             "password": "222",
             "position": "ผู้ดูแลระบบ",
         },
         {
             "name": "jane",
-            "email": "jane@email.com",
+            "email": "jane@gmail.com",
             "password": "333",
             "position": "แคชเชียร์",
         },
         {
             "name": "jack",
-            "email": "jack@email.com",
+            "email": "jack@gmail.com",
             "password": "444",
             "position": "แคชเชียร์",
         },
         {
             "name": "elizabeth",
-            "email": "elizabeth@email.com",
+            "email": "elizabeth@gmail.com",
             "password": "555",
             "position": "พนักงานบาร์",
         },
         {
             "name": "robert",
-            "email": "robert@email.com",
+            "email": "robert@gmail.com",
             "password": "666",
             "position": "ซอมเมลิเยร์",
         },
         {
             "name": "jill",
-            "email": "jill@email.com",
+            "email": "jill@gmail.com",
             "password": "777",
             "position": "ผู้จัดการครัว",
         },
         {
             "name": "jame",
-            "email": "james@email.com",
+            "email": "james@gmail.com",
             "password": "888",
             "position": "กุ๊ก",
         },
         {
             "name": "william",
-            "email": "william@email.com",
+            "email": "william@gmail.com",
             "password": "999",
             "position": "ผู้ช่วยกุ๊ก",
         },
         {
             "name": "linda",
-            "email": "linda@email.com",
-            "password": "123",
+            "email": "linda@gmail.com",
+            "password": "000",
             "position": "บริกร",
         },
         {
             "name": "jennifer",
-            "email": "jennifer@email.com",
-            "password": "456",
+            "email": "jennifer@gmail.com",
+            "password": "001",
             "position": "พนักงานต้อนรับ",
         },
         {
             "name": "mary",
-            "email": "mary@email.com",
-            "password": "695",
-            "position": "พนักงานต้อนรับ",
+            "email": "mary@gmail.com",
+            "password": "102",
+            "002": "พนักงานต้อนรับ",
         },
     ]
-    
+
     # ? method ในการให้ข้อมูลผู้ใช้งาน
     @classmethod
     def getUser(cls) -> List[Dict[str, str]]:
