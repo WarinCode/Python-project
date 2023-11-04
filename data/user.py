@@ -10,6 +10,5 @@
 	{'name': 'william', 'email': 'william@gmail.com', 'password': '$pbkdf2-sha256$29000$E6K0thZijNF6r/Xeu1fKGQ$1nskYt9pmJdUfIcEa5ryjL/1GY.N7lvuXWUniwthuCA', 'position': 'ผู้ช่วยกุ๊ก'},
 	{'name': 'linda', 'email': 'linda@gmail.com', 'password': '$pbkdf2-sha256$29000$hRCCsFZqrZWydu69lxKCcA$7ZII1CK3YefSiRmVlOkYAagfKdy8FIui2LGOLTbIvx0', 'position': 'บริกร'},
 	{'name': 'jennifer', 'email': 'jennifer@gmail.com', 'password': '$pbkdf2-sha256$29000$JuS8F2IMgVCqFUII4dw7pw$U1EsaJoqER5mhty08qnpvvaQFNL1i/8z8OlsvmMYAdY', 'position': 'พนักงานต้อนรับ'},
-	{'name': 'mary', 'email': 'mary@gmail.com', 'password': '$pbkdf2-sha256$29000$/997T4mx1vp/r1WqdW4NwQ$uX9o3MfM6y2sBlK7LGeBv21AWJ7Ti6K.EBTeKTHvc9w', '002': 'พนักงานต้อนรับ'},
-	{'name': 'jas', 'password': '$pbkdf2-sha256$29000$GQMAYAyB8B7DWAsBQAgBAA$KX1cubKdZ8iIqkdK5a2lek0WPInE.Z9OsoPJ0wLu8sg', 'email': 'jas@gmail.com', 'position': 'บริกร'},
+	{'name': 'mary', 'email': 'mary@gmail.com', 'password': '$pbkdf2-sha256$29000$/997T4mx1vp/r1WqdW4NwQ$uX9o3MfM6y2sBlK7LGeBv21AWJ7Ti6K.EBTeKTHvc9w', 'position': 'พนักงานต้อนรับ'},
 ]
