@@ -35,4 +35,13 @@
             {"name": "ไก่ทอด", "amount": 3, "price": 35, "total": 105},
         ],
     },
+    "SDN060636": {
+        "date": "05/11/2023",
+        "time": "20:24:04",
+        "number": 1,
+        "pay": 300,
+        "change": 0,
+        "total": 300,
+        "order": [{"name": "พาสต้าคาโบนาร่า", "amount": 4, "price": 75, "total": 300}],
+    },
 }

@@ -34,6 +34,7 @@ from yapf.yapflib.yapf_api import FormatFile
 # https://en.wikipedia.org/wiki/BBCode
 # https://passlib.readthedocs.io/en/stable/#hosting
 # https://github.com/google/yapf
+# https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html
 
 # |ขั้นตอนการใช้งาน|                 |คำสั่ง|
 # ดาวโหลด์:                        git clone https://github.com/VarinCode/Python-project.git
@@ -507,7 +508,7 @@ class Configuration(Date):
                 console.print(err.__str__() , style='red')
         return user
     
-    def __setUser__(self , user: Optional[Dict[str , str]] = None  , isLogout:bool = False) -> None:
+    def __setUser__(self , user: Optional[Dict[str , str]] = None  , isLogout: bool = False) -> None:
         """ method ในการตั้งค่าข้อมูลผู้ใช้งาน \n
         ต้องมีการรับค่า parameters มา 2 ตัวคือ user และ isLogout \n
         ``user`` : ข้อมูลผู้ใช้งานที่ได้จากการ login ข้อมูลจะเป็น dict แต่ถ้าไม่มีให้ส่งเป็น None มาได้ \n
@@ -526,12 +527,12 @@ class Configuration(Date):
                 #* ให้ property ใน attribute user มีค่าเป็นข้อมูลของผู้ใช้งานที่ส่งมา
                 self.__user__[key] = user[key]
     
-    def __setPermissions__(self , user:Dict[str , str]) -> None:
+    def __setPermissions__(self , user: Dict[str , str]) -> None:
         """ method ในการตั้งค่าสิทธิ์การเข้าถึงใช้งานคำสั่งในโปรแกรม  \n
         ต้องรับค่า parameter มา 1 ตัวคือ user \n
         ``user`` คือ ข้อมูลผู้ใช้งานข้อมูลเป็น dict จะเพิ่ม property หลายๆตัวลง property AccessPermissions เพื่อจะไว้เป็นการอ่านค่าสิทธิ์การใช้งานคำสั่งในโปรแกรม """
         # ดึงแค่ตำแหน่งผู้ใช้งานมาเพื่อตั้งค่าระดับการเข้าถึง 
-        position:str = user["position"] # ตำแหน่งของผู้ใช้งาน
+        position: str = user["position"] # ตำแหน่งของผู้ใช้งาน
         #? ยิ่งตำแหน่งระดับสูงๆจะมีสิทธิ์การเข้าถึงคำสั่งโปรแกรมที่มาก (สิทธิ์การใช้งานจะขึ้นอยู่กับตำแหน่งงาน)
         #? ค่า True : อณุญาติให้มีสิทธิ์เข้าถึงและใช้งานคำสั่งนั้น , ค่า False : ไม่อณุญาติให้มีสิทธิ์เข้าถึงและไม่ให้ใช้คำสั่งนั้น
         if position in self.__POSITIONS__["management"]: # ตำแหน่งงานบริหาร
@@ -999,8 +1000,8 @@ class Program(Configuration , Date):
                         details.add_row(f'{i + 1}' , item['name'] , f'{item["amount"]}' , f'{item["price"]}' , f'{item["total"]:,} บาท')
                     # นำ panel ทั้งหมดมารวมใส่ใน group
                     contents = Group(
-                        Panel('' , title=f'รหัสอ้างอิงการสั่งซื้อ [deep_sky_blue1 on grey3]{code}[/]/ เลข order ที่ [bright_cyan]{order["number"]}[/] ของวันที่ {order["date"]}' , box=SIMPLE),
-                        Panel(f'รายละเอียดการสั่งมีดังนี้' , box=SIMPLE),
+                        Panel(f'รหัสอ้างอิงการสั่งซื้อ [deep_sky_blue1 on grey3]{code}[/] / เลข order ที่ [bright_cyan]{order["number"]}[/] ของวันที่ {order["date"]}' , box=SIMPLE),
+                        Panel(f'รายละเอียดการสั่งมีดังนี้:' , box=SIMPLE),
                         Panel(details , box=SIMPLE),   
                         Panel(f'จำนวนอาหารที่สั่งทั้งหมด {totalAmount:,} อย่าง' , box=SIMPLE),
                         Panel(f'เงินสดที่จ่ายมา: {order["pay"]} บาท / เงินทอน: {"จ่ายครบจำนวนไม่ต้องทอนเงิน" if change == 0 else f"{change} บาท"}' , box=SIMPLE),

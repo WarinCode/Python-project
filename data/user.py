@@ -86,22 +86,8 @@
     {
         'name': 'aaa',
         'password':
-        '$pbkdf2-sha256$29000$SwkhhHDuvffee09pDeHcuw$1RnWpmd.gzgU4uqb0f2zGYehFYrYUjT5G40qWnChgNo',
+        '$pbkdf2-sha256$29000$/h.jNGZMaa2V0tpbC2FMCQ$x/5woiXcv8hN9.OtXqofCDFW9khbz208EEkkckllSYk',
         'email': 'aaa@gmail.com',
-        'position': 'ผู้ดูแลระบบ'
-    },
-    {
-        'name': 'bbb',
-        'password':
-        '$pbkdf2-sha256$29000$2zsH4LyXMoZQKgXgfC.FsA$r.JoodZ6JRQuREhB4OcRmORk6i6bWHJZZCNREfGxiTs',
-        'email': 'bbb@gmail.com',
         'position': 'พนักงานต้อนรับ'
-    },
-    {
-        'name': 'ccc',
-        'password':
-        '$pbkdf2-sha256$29000$SSkFgNC6dw6BcE4J4XzPOQ$KMaNpt4gC4B3eyFYgF6bvJaYSh.6CKXzUNUZu2VyiLE',
-        'email': 'ccc@gmail.com',
-        'position': 'หัวหน้าบริกร'
     },
 ]
