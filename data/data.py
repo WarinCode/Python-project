@@ -268,8 +268,7 @@ class Users:
             "email": "jennifer@gmail.com",
             "password": "001",
             "position": "พนักงานต้อนรับ",
-        },
-        {
+        },{
             "name": "mary",
             "email": "mary@gmail.com",
             "password": "102",
