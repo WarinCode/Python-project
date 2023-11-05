@@ -5,7 +5,7 @@ from random import randint , random , choice
 from math import floor
 # from data.data import Menu , Users
 # pip install typing
-from typing import List , Dict , Any , Tuple
+from typing import List , Dict , Any , Tuple , Optional
 # pip install ascii-magic
 from ascii_magic import AsciiArt 
 from statistics import mean , mode
@@ -22,9 +22,10 @@ from passlib.hash import pbkdf2_sha256
 from yapf.yapflib.yapf_api import FormatFile
 
 #* ไฟล์ code project อยู่ที่ github -> https://github.com/VarinCode/Python-project
-#* โดย code จะมี 2 branches ได้แก่:
-#* branch main คือ branch หลักของ code เขียนด้วยรูปแบบ oop พัฒนาอยู่ในปัจจุบัน โปรแกรมมีฟีเจอร์ต่างๆพร้อมให้ใช้งาน 
-#* branch prototype code รุ่นแรกที่ถูกพัฒนา สามารถใช้งานฟีเจอร์หลักได้ แต่ยังมีคง มี bug อยู่
+#* โดย code จะมี 3 branches ได้แก่:
+#* main : เป็น branch หลักของ code เขียนด้วยรูปแบบ oop พัฒนาอยู่ในปัจจุบัน โปรแกรมมีฟีเจอร์ต่างๆพร้อมให้ใช้งาน 
+#* prototype : code รุ่นแรกที่ถูกพัฒนา สามารถใช้งานฟีเจอร์หลักได้ แต่ยังมีคง มี bug อยู่
+#* type-hints : เหมือน code ของ branch main ทุกอย่างแต่จะเขียน type เพิ่ม
 
 #* เอกสารประกอบการใช้งาน API: 
 # https://rich.readthedocs.io
@@ -49,7 +50,7 @@ class ReadWrite:
     """ อ่านและเขียนไฟล์ข้อมูลนำไปใช้ในการอ่านเขียนข้อมูลเมนูอาหารในแต่ละไฟล์ """
     
     @staticmethod
-    def read(initialValue:Any = None, path:str = r'C:\Users\ACER USER5949486\Desktop\Python-project\data\menu.py') -> Any:
+    def read(initialValue: Any = None , path: str = r'C:\Users\ACER USER5949486\Desktop\Python-project\data\menu.py') -> Any:
         #? method อ่านไฟล์เนื้อหามีการคืนกลับของข้อมูล 
         #? มีการรับค่า parameter มา 1 ตัว path คือตำแน่งไฟล์เป้าหมายที่จะไปเปิดอ่านถ้าตำแหน่ง path ที่ส่งมานั้นไม่มีอยู่จริงจะเกิด error ขึ้นได้
         #? วิธีการให้ copy path ที่จะทำการอ่านไฟล์นั้นให้ส่งค่า argument เป็น string จัด \ การโดยใช้ r เติมหน้า string เช่น r"C:\Users\ACER USER5949486\Desktop\Python-project\data\menu.py" 
@@ -70,7 +71,7 @@ class ReadWrite:
             return initialValue if data == '' else eval(data) 
     
     @staticmethod
-    def write(data:List[str | Dict[str,str]] , isList:bool = False , path:str = r'C:\Users\ACER USER5949486\Desktop\Python-project\data\menu.py' , mode:str ='w') -> None:
+    def write(data: List[str | Dict[str,str]] , isList: bool = False , path: str = r'C:\Users\ACER USER5949486\Desktop\Python-project\data\menu.py' , mode: str ='w') -> None:
         #? method เขียนไฟล์ หรือ เขียนข้อมูลเพิ่มเติมได้
         #? มีการรับค่า parameters มา 4 ตัวคือ data , path , isList และ mode
         #? parameter ใช้หลักการเดียวกับ method read ส่วน parameter data ต้องส่งข้อมูลเป็น list เท่านั้น ใน elements จะเป็น dict ปรับแต่งใช้ภายใน project
@@ -99,13 +100,13 @@ class ReadWrite:
                     raise IOError
         except IOError:
             # console.print('เกิดข้อผิดพลาดในการอ่านไฟล์โปรดลงใหม่อีกครั้ง' , style='red')
-            pass
+            ...
         except Exception:
             # console.print('ข้อมูลที่ส่งมาจะต้องส่งมาเป็น list เท่านั้นถึงจะเขียนไฟล์ได้' , style='red')
-            pass
+            ...
         else:
             # console.print(f'[green]✓ เขียนไฟล์เสร็จเรียบร้อยที่ตำแหน่ง [/][underline blue]{path}[/]')
-            pass
+            ...
             
 class Date:
     """ วันเวลาปัจจุบัน """
@@ -117,10 +118,10 @@ class Date:
     #* วันที่ เวลา
     now = dt.now()
     time = now.time()
-    year:int = now.date().year + 543
-    today:str = now.date().strftime('%d/%m/%Y') 
+    year = now.date().year + 543
+    today = now.date().strftime('%d/%m/%Y') 
     
-    def greeting(self , userName:str) -> None:
+    def greeting(self , userName: str) -> None:
         """ method ทักทายผู้ใช้งานและบอกวันเวลาปัจจุบัน """
         hour = self.time.hour 
         hi = ''
@@ -137,7 +138,7 @@ class Date:
         console.print(f"🕓 เวลา {f'0{self.time.hour}' if self.time.hour < 10 else self.time.hour}:{f'0{self.time.minute}' if self.time.minute < 10 else self.time.minute}:{f'0{self.time.second}' if self.time.second < 10 else self.time.second}")
         console.print("🙂 โปรแกรมพร้อมให้บริการ")
 
-    def getTime(self , log:bool = False) -> str:
+    def getTime(self , log: bool = False) -> str:
         """ method รับค่าเวลา """
         # อัปเดตค่า attribute
         self.now = dt.now()
@@ -196,7 +197,7 @@ class Configuration(Date):
     __KEYWORDS__ = ("e" , "c", "m" , "o", "a" , "d" , "l" , "s" , "ed" , "cl" , "out" , "exit" , "commands", "menu" , "order" ,"add" , "delete" , "log" ,  "search" , "edit" , "clear" , "logout")
     
     #* เช็คคำที่ใส่มาว่าเป็นคำสั่งของโปรแกรมหรือไม่โดยจะคืนค่า True: คือคำสั่ง , False: ไม่ใช้คำสั่ง
-    def __isKeyword__(self , __param:str) -> bool:
+    def __isKeyword__(self , __param: str) -> bool:
         return __param in self.__KEYWORDS__
     
     #* ค่าที่กำหนดไว้เป็นพื้นฐานของโปรแกรม
@@ -209,7 +210,7 @@ class Configuration(Date):
     __AMOUNT__ = 30             # จำนวนสูงสุดที่ขายอาหารอยู่ในร้านอาหาร (ต่อเมนู)
     
     #* การบันทึกข้อมูล
-    __LOG__:List[str] = []      # log บันทึกข้อมูลการทำงานต่างๆของโปรแกรม
+    __LOG__: List[str] = []      # log บันทึกข้อมูลการทำงานต่างๆของโปรแกรม
     
     #* ประเภทของ log ในโปรแกรมนี้
     GENERAL = 'general'
@@ -236,7 +237,7 @@ class Configuration(Date):
     def __login__(self) -> Dict[str , str]:   
         """ method ในการ login """
         #* (function ย่อย) function ในการเช็คค่าว่าง True: เป็นค่าว่างเปล่า , False: ไม่เป็นค่าว่างเปล่า
-        isEmpty:bool = lambda var: var == "" or var.__len__() == 0
+        isEmpty = lambda var: var == "" or var.__len__() == 0
         
         # แสดงข้อความ
         console.line() # ขึ้นบรรทัดใหม่
@@ -244,7 +245,7 @@ class Configuration(Date):
         console.line()
         
         #* (function ย่อย) function ในการ login ผู้ใช้งานต้องกรอกข้อมูลเพื่อ login ใช้งานเข้าสู่โปรแกรม
-        def loginForm() -> List[bool | Dict[str , str]]:
+        def loginForm() -> Tuple[bool , Dict[str , str]]:
             # ข้อมูลที่ผู้ใช้งานต้องกรอก
             userLogin = {
                 "nameOrEmail": None,
@@ -275,10 +276,10 @@ class Configuration(Date):
                 except Exception as err:
                     console.print(err.__str__() , style='red')
             # ส่งค่าเป็น list โดย el1: คือสถานะข้อมูลของผู้ใช้งาน (True/False) , el2: ข้อมูลผู้ใช้งานเป็น dictionary
-            return [bool(userLogin) , userLogin] 
+            return (bool(userLogin) , userLogin) 
             
         #* (function ย่อย) function ในการตรวจสอบข้อมูลผู้ใช้งาน 
-        def userVerification(status: bool , validateUser: Dict[str , str]) -> List[bool | Dict[str , str]]:
+        def userVerification(status: bool , validateUser: Dict[str , str]) -> Tuple[bool , Dict[str , str]]:
             self.__loading__(text='กำลังตรวจสอบข้อมูล...') # แสดงหน้า loading
             # parameter status คือ ค่าสถานะที่ส่งมา True แปลว่าข้อมูลพร้อมตรวจสอบความถูกต้อง ถ้า False คือไม่พร้อมตรวจสอบ
             # parameter validateUser คือ ข้อมูลผู้ใช้งานที่ login มีการตรวจสอบมานิดนึงแล้วแต่ข้อมูลที่ส่งมานั้นจะอยู่ในระบบผู้ใช้งานโปรแกรมนี้หรือไม่ต้องนำมาตรวจสอบให็ถูกต้องถึงจะ login สำเร็จ
@@ -317,10 +318,10 @@ class Configuration(Date):
             except Exception as err:
                 console.print(err.__str__() , style='red')
             # ส่งเป็น list โดย el1: สถานะการ login ถ้า True: login สำเร็จ , False: login ไม่สำเร็จ , el2: ข้อมูลผู้ใช้งานเป็น dict
-            return [isValid , validateUser]
+            return (isValid , validateUser)
         
         isValid = False # ยืนยันค่าสถานะการ login
-        saveUserData:Dict[str , str] = {} # บันทึกข้อมูลผู้ใช้งาน
+        saveUserData: Dict[str , str] = {} # บันทึกข้อมูลผู้ใช้งาน
         counter = 0 # ตัวนับข้อผิดพลาดที่เกิดจากการ login
         #* อธิบาย 
         # function userVerification จะทำการ callback function ให้เรียกใช้ function loginForm ก่อนเมื่อดำเนินการตามคำสั่งเรียบร้อยแล้วจะคืนค่ากลับมา
@@ -348,7 +349,7 @@ class Configuration(Date):
     def __createAccount__(self) -> None:
         """ method ในการ สมัครบัญชีผู้ใช้งานใหม่ """
         #* (function ย่อย) functtion ในการเช็คค่าว่าง  True: เป็นค่าว่างเปล่า , False: ไม่เป็นค่าว่างเปล่า
-        isEmpty:bool = lambda var: var == "" or var.__len__() == 0
+        isEmpty = lambda var: var == "" or var.__len__() == 0
         # ข้อมูลผู้ใช้งานที่ผู้ใช้งานต้องกรอก
         newUser = {
             "name": None,
@@ -429,8 +430,8 @@ class Configuration(Date):
             except Exception as err:
                 console.print(err.__str__() , style='red')
                 
+        allPositions: List[str] = []
         if bool(newUser["password"]): # ถ้าใส่ password ถูกต้องแล้วให้แสดงข้อความ
-            allPositions:List[str] = []
             console.print(f'💬 โปรดเลือกตำแหน่งงานในร้านอาหารของที่คุณทำงานอยู่ ->' , end=" ")
             for key in self.__POSITIONS__:
                 allPositions.extend(self.__POSITIONS__[key]) # นำ tuple (ถือว่านำ elements เก็บเข้าได้หลายตัว) เพิ่มใน list
@@ -475,7 +476,7 @@ class Configuration(Date):
     def __getUser__(self) -> Dict[str , str]:
         """ method ในการรับข้อมูลผู้ใช้งานจากการ login  """
         # ข้อมูลผู้ใช้งาน
-        user: None | Dict[str , str] = None
+        user: Optional[Dict[str , str]] = None
         # แสดงข้อความ
         console.line()
         console.print('[u]โปรดเลือกพิมพ์ตัวเลขต่อไปนี้[/]' , width=30 , justify='center' , style='blue bold')
@@ -506,7 +507,7 @@ class Configuration(Date):
                 console.print(err.__str__() , style='red')
         return user
     
-    def __setUser__(self , user:Dict[str , str] | None , isLogout:bool = False) -> None:
+    def __setUser__(self , user: Optional[Dict[str , str]] = None  , isLogout:bool = False) -> None:
         """ method ในการตั้งค่าข้อมูลผู้ใช้งาน \n
         ต้องมีการรับค่า parameters มา 2 ตัวคือ user และ isLogout \n
         ``user`` : ข้อมูลผู้ใช้งานที่ได้จากการ login ข้อมูลจะเป็น dict แต่ถ้าไม่มีให้ส่งเป็น None มาได้ \n
@@ -551,20 +552,20 @@ class Configuration(Date):
         #* กระจาย properties เข้าใน dict
         self.__user__["AccessPermissions"] = { **self.__PERMISSIONS__ }
         
-    def __log__(self , text:str = "" , typeOfLog: None | str = None , item: None | List[str | int] = None) -> None:
+    def __log__(self , text: str = "" , typeOfLog: Optional[str] = None , item: Optional[List[str | int]] = None) -> None:
         """ method ในการบันทึกข้อมูลการทำงานต่างๆของโปรแกรม  \n
         มี default parameters 2 ตัวมีค่าเป็น None ตอนเริ่มต้น \n
         ``typeOfLog`` : ระเภทของ log ที่จะบันทึกจะมีข้อความที่ set ไว้ก่อนแล้วเพื่อนำไปแสดงผลและเขียนไฟล์ , การส่งค่า parameter ตัวนี้จะต้องส่งเป็นชื่อ attribute ตัวพิมพ์ใหญ่ที่เป็นชื่อแบ่งแต่ละระเภทถูกสร้างไว้ให้แล้ว \n
         ``item`` : ข้อมูลจะถูกส่งมาให้เพื่อเขียนเพิ่มเติมใน log ส่งเป็น list
         """
         # ชื่อผู้ใช้งานโปรแกรม
-        userName:str = self.__user__["name"] 
+        userName = self.__user__["name"] 
         # ข้อความ
-        txt:str = f"{self.getTime(log=True)}\t\t\t" 
+        txt = f"{self.getTime(log=True)}\t\t\t" 
         
         # แบ่งประเภทของการเก็บ log ต่างๆได้ดังนี้
         # log เก็บข้อความธรรมดา
-        if bool(text) and (typeOfLog is None and item is None):
+        if bool(text) and (typeOfLog == None and item == None):
             txt += f"{text}"
         # log เพิ่มข้อมูล
         elif typeOfLog == self.ADD:
@@ -573,13 +574,13 @@ class Configuration(Date):
         elif typeOfLog == self.DEL:
             txt += f"{userName} ได้ทำการลบสินค้า \"{text}\" ในรายการเมนู"
         # log แก้ไขข้อมูล
-        elif typeOfLog == self.EDIT:
+        elif typeOfLog == self.EDIT and item != None:
             txt += f"{userName} ทำการแก้ไขข้อมูลสินค้า \"{item[0]}\" ไปเป็น \"{item[1]}\" ในรายการเมนู"
         # log เกิด error
         elif typeOfLog == self.ERROR:
             txt += f"เกิดปัญหาขึ้น {text} "
         # log ขายสินค้าอาหาร
-        elif typeOfLog == self.SELL:
+        elif typeOfLog == self.SELL and item != None:
             txt += f"{userName} ได้กดสั่งซื้ออาหารให้ลูกค้าอาหาร \"{item[0]}\" จำนวน {item[1]} อย่าง"
         # log คำสั่ง
         elif typeOfLog == self.COMMAND:
@@ -602,8 +603,8 @@ class Configuration(Date):
         console.print(*self.__LOG__ , sep='\n' , style='blue')
         console.line()
 
-    def __loading__(self , isLogin:bool = False , isLogout:bool = False , isCreate:bool = False , 
-        isDelete:bool = False , text:str = '' , delay:float = .3 , spinner:str ='arc') -> None:
+    def __loading__(self , isLogin: bool = False , isLogout: bool = False , isCreate: bool = False , 
+        isDelete: bool = False , text: str = '' , delay: float = .3 , spinner: str ='arc') -> None:
         """ method แสดง loading ไว้ใช้ในการทำลูกเล่นของโปรแกรม \n
         มี parameter หลายตัว ถูก set ให้เป็น defalut parameter ค่าเป็น False \n
         ``isLogin`` : ถ้าส่ง arg เป็น (True: แสดง loding เป็นแบบ login / False: ไม่แสดง loading แบบ login) \n
@@ -658,7 +659,7 @@ class Configuration(Date):
         self.__log__(typeOfLog=self.WARN)
         raise Exception('[bold red on grey3]⨉ คุณไม่มีสิทธิ์ที่จะใช้งานคำสั่งนี้ได้[/]')
     
-    def __authorize__(self , command:str) -> None:
+    def __authorize__(self , command: str) -> None:
         """ method ควบคุมสิทธิ์การใช้งานคำสั่ง ต้องการให้ผู้ใช้งานแค่บางกลุ่มได้รับอณุญาติให้ใช้งานคำสั่งบางตำสั่งของโปรแกรม """
         self.__PROGRAMSTATUS__["isDenied"] = False
         
@@ -682,59 +683,59 @@ class Configuration(Date):
     #? กำหนด methods ที่สำคัญดังนี้ โดยใช้ abstract method และเป็น private method
     @abstractmethod
     def __setElements__(self) -> None:
-        pass
+        ...
     
     @abstractmethod
-    def __search__(self , param: str) -> int:
-        pass
+    def __search__(self , param: str , obj: Optional[List[Dict[str , str | int]]]) -> Optional[int]:
+        ...
     
     @abstractmethod
-    def __addResources__(self , auto:bool) -> None:
-        pass
+    def __addResources__(self , auto: bool) -> None:
+        ...
     
     @abstractmethod
     def __generateCode__(self) -> str:
-        pass
+        ...
     
     @abstractmethod
     def __generateBill__(self , code: int , pay: int , result: int , order: List[Dict[str , str | int]]) -> None:
-        pass
+        ...
     
     @abstractmethod
     def __searchReferentCode__(self) -> None:
-        pass
+        ...
     
     @abstractmethod
     def __foodOrdering__(self) -> None:
-        pass
+        ...
     
     @abstractmethod
     def __addProduct__(self) -> None:
-        pass
+        ...
     
     @abstractmethod
     def __deleteProduct__(self) -> None:
-        pass
+        ...
     
     @abstractmethod
     def __editProduct__(self) -> None:
-        pass
+        ...
     
     @abstractmethod
     def __deleteMenu__(self) -> None:
-        pass
+        ...
     
     @abstractmethod
     def __conclusion__(self , total: List[int] , orders: List[Dict[str , int]]) -> str:
-        pass
+        ...
     
     @abstractmethod
     def __exitProgram__(self) -> None:
-        pass
+        ...
     
     @abstractmethod
     def execute(self) -> None:
-        pass
+        ...
     
 class Program(Configuration , Date): 
     """ โปรแกรมร้านอาหาร """
@@ -750,18 +751,18 @@ class Program(Configuration , Date):
     __currentOrder__: List[Dict[str , str | int]] = [] # order ที่ทำการสั่งอาหารไปในรอบนั้นๆจะเก็บค่า dict ไว้ใน list
     __orderNumber__: int = 0 # หมายเลขจำนวนครั้งในการสั่ง order
     __orderCode__: str = '' # รหัสการสั่งซื้อ
-    __allOrdersCode__: Dict[str , Dict[str , str]] = {} # เก็บรหัสอ้างอิงการสั่งซื้อ        
+    __allOrdersCode__: Dict[str , str | int | List[Dict[str , str | int]]] = {} # เก็บรหัสอ้างอิงการสั่งซื้อ        
     __allOrders__: List[Dict[str , str | int]] = [] # order ทั้งหมดจะเก็บไว้ใน list 
     __result__: int = 0 # ยอดเงินรวมจำนวนล่าสุดของ __currentOrder__
     __totalMoney__: List[int] = [] # ยอดเงินรวมทั้งหมดใน 1วัน เก็บเป็นยอดสั่งอาหารเรียงแต่ละรายการ
     
     #? method แรกที่จะรันคำสั่งเมื่อเรียกใช้งาน object หรือ class
-    def __init__(self , menu:List[Dict[str , str | int]] , user:List[Dict[str , str]]) -> None:
+    def __init__(self , menu: List[Dict[str , str | int]] , user: List[Dict[str , str]]) -> None:
         #* ส่งค่า parameter ไปให้ใน superclass
         super().__init__(usersData=user) 
         self.__log__(text="โปรแกรมเริ่มต้นทำงาน") # เก็บ log
         #* login และ ตั้งค่าสิทธิ์การใช้งานก่อน
-        _user:Dict[str , str | Dict[str , bool]] = super().__getUser__() # login เสร็จจะได้ข้อมูล user
+        _user: Dict[str , str] = super().__getUser__() # login เสร็จจะได้ข้อมูล user
         #* ตั้งค่าข้อมูลผู้ใช้งานในโปรแกรม
         super().__setUser__(_user) 
         #* ตั้งค่าสิทธิ์การใช้งานโปรแกรม
@@ -773,23 +774,23 @@ class Program(Configuration , Date):
         #* นำเข้า property(ค่า value) ใน dict เรียงเก็บไว้ใน list ตอนเริ่มโปรแกรม
         self.__setElements__() 
         self.showLogo() # แสดง logo ร้านอาหาร
-        self.greeting(userName=self.__user__["name"]) # ทักทายผู้ใช้งาน
+        self.greeting(userName=_user["name"]) # ทักทายผู้ใช้งาน
         self.showCommands() # แสดงคำสั่ง
         #* เติมจำนวนสินค้าให้ครบตอนเริ่มโปรแกรม
         self.__addResources__(auto=True) 
         
-    def __addResources__(self , auto:bool = True) -> None:
+    def __addResources__(self , auto: bool = True) -> None:
         """ method ในการเพิ่มจำนวนอาหารหรือจำนวนสินค้าอัติโนมัติ \n
         ``auto`` : การเติมจำนวนอาหารอัติโนมัติ ถ้าใส่ (True : เติมอัติโนมัติ / False : ไม่ได้เติม) """
         if auto:
             for i in range(len(self.__menu__)):
                 if self.__menu__[i]["remain"] == self.__AMOUNT__: # ถ้าจำนวนยังครบอยู่ไม่ต้องเติม
-                    continue
+                    ...
                 else:
-                    amount:int = self.__AMOUNT__ - self.__menu__[i]["remain"] # เติมจำนวนเท่าที่ขาดหายไปเท่านั้น
+                    amount = self.__AMOUNT__ - self.__menu__[i]["remain"] # เติมจำนวนเท่าที่ขาดหายไปเท่านั้น
                     self.__menu__[i]["remain"] += amount
         
-    def __setElements__(self , reset:bool = False) -> None:
+    def __setElements__(self , reset: bool = False) -> None:
         """ (method หลัก) ในการเปลี่ยนค่าข้อมูลใน ``foodList`` , ``idList`` เมื่อในรายการในเมนู (menu) มีการเปลี่ยนแลง ตัวแปรทั้ง 2 ตัวนี้จะเปลี่ยนตามด้วย \n
         ``reset`` : default parameter ถ้าส่งค่า (True : มีการให้ล้างค่า / False : ไม่ได้มีการให้ล้างค่าใหม่  )
         """
@@ -803,24 +804,25 @@ class Program(Configuration , Date):
             self.__foodList__ = [item["name"] for item in self.__menu__] 
             self.__idList__ = [str(item["id"]) for item in self.__menu__] # ค่า id เป็นตัวเลขแปลงให้เป็น string เพื่อง่ายต่อการค้นหาและลด error
         
-    def __search__(self , param:str , obj:List[Dict[str , str | int]] | None = None) -> int | None:
+    def __search__(self , param: str , obj: Optional[List[Dict[str , str | int]]] = None) -> Optional[int]:
         """ (method หลัก) ในการค้นหา dictionary ที่อยู่ใน ``foodList`` , ``idList`` (อ่านค่าใน list) ส่งคืนกลับเป็นเลข index หรือ None \n
          ``param`` : ต้องมีการส่งค่าให้โดยจะต้องส่งเป็นชื่ออาหารหรือรหัสสินค้าก็ได้ \n
          ``obj`` : จะส่ง param ให้เช็คหาค่าใน obj(list) คืนกลับเป็นเลข index ของ param ที่ค้นหา
         """
         # เช็ค parameter ที่ส่งมา
-        param:str =  param.strip() # ตัดเว้นว่างออก
+        param: str =  param.strip() # ตัดเว้นว่างออก
         if obj != None: # ไว้ใช้ในการสั่งอาหาร
             # เช็ค object ที่ส่งมาว่ามีค่าอยู่ใน object หรือไม่
             newObj:List[str] = [item["name"] for item in obj]
             return newObj.index(param) if param in newObj else None
         else: 
+            idx: int = 0
             # มีข้อมูลใน รายการอาหาร
             if param in self.__foodList__:
-                idx:int = self.__foodList__.index(param)
+                idx = self.__foodList__.index(param)
             # มีข้อมูลใน รายการรหัสสินค้า
             elif param in self.__idList__:
-                idx:int = self.__idList__.index(param)
+                idx = self.__idList__.index(param)
             # ถ้าไม่มีข้อมูลอยู่ในทั้ง 2 รายการให้ส่งค่า None
             return idx if (param in self.__foodList__ or param in self.__idList__) else None
                         
@@ -828,7 +830,7 @@ class Program(Configuration , Date):
         """ method แสดงเมนูอาหาร """
         # ตารางเมนูอาหาร
         menuTable = Table(title='เมนูอาหาร' , title_style='yellow italic', show_lines=True, show_footer=True, box=HEAVY_EDGE)
-        totalAmount:int = sum([item["remain"] for item in self.__menu__])
+        totalAmount = sum([item["remain"] for item in self.__menu__])
         # สร้าง columns
         menuTable.add_column(header='ลำดับ' , footer='รวม' , justify='center')
         menuTable.add_column(header='อาหาร', footer=f'{self.__menu__.__len__()} เมนู' , justify='center')
@@ -869,21 +871,21 @@ class Program(Configuration , Date):
         console.print(commandsTable)
         console.line()
     
-    def showLogo(self , path:str = './img/logo.png') -> None:
+    def showLogo(self , path: str = './img/logo.png') -> None:
         """ method แสดง logo ของร้านอาหาร \n
         ``path`` : default parameter ที่ set ไว้ให้แสดง logo ของร้านอาหารตอนเริ่มโปรแกรม โดยให้อ้างอิงตำแหน่ง logo ที่อยู่ในโปรเจค """
         logo = AsciiArt.from_image(path)
         logo.to_terminal() 
         
     #? แสดงข้อความแจ้งเตือนทุกครั้งตอนเรียกใช้ methods
-    def __alert__(self , context: str , *args:Tuple[str] | None) -> None: # แสดงข้อความเมื่อเรียกคำสั่งที่พิมพ์ไป
+    def __alert__(self , context: str , *args: Optional[Tuple[str , ...]]) -> None: # แสดงข้อความเมื่อเรียกคำสั่งที่พิมพ์ไป
         """ method แสดงข้อความแจ้งเตือนทุกครั้งตอนเรียกใช้ methods \n
         ``context`` : ข้อความที่จะนำมาแสดงใน terminal เพื่อเข้ากับบริบทของคำสั่ง \n
         ``args`` : จะแสดงแจ้งเตือนเพื่มเติมตาม arguments ที่ส่งให้มา แต่ถ้าไม่ต้องการส่งข้อความแจ้งเตือนเพิ่มให้ส่ง argument ในลำดับที่ 2 เป็น None """
         console.print(f'❔ พิมพ์ตัว "n" เพื่อแสดงแจ้งเตือนนี้อีกครั้ง\n❔ พิมพ์ตัว "m" หรือ "menu" เพื่อแสดงเมนู\n❔ พิมพ์ตัว "e" หรือ "end" {context}')
         # การส่งค่า parameter ตัวที่ 2 เป็น None คือไม่ต้องการแสดงข้อความอย่างอื่นเพิ่ม
         if args[0] == None: 
-            pass
+            ...
         else: # แสดงแจ้งเตือนเพิ่ม
             console.print(*args, sep='\n')
         
@@ -891,9 +893,9 @@ class Program(Configuration , Date):
         """ method สร้างเลข id \n
         ``length`` : ความยาวของการสร้างเลข id แบบสุ่ม """
         numbers:List[str] = []  # เก็บตัวเลขที่สุ่มมาได้ไว้ใน list
-        rand:str = lambda: str(floor(random() * randint(1,10000))) # สุ่มเลขส่งคืนกลับมาเป็น string 
+        rand = lambda: str(floor(random() * randint(1,10000))) # สุ่มเลขส่งคืนกลับมาเป็น string 
         while True:
-            num:str = choice(rand()) # สุ่มเลือก 1 element เลขของผลลัพธ์ 
+            num = choice(rand()) # สุ่มเลือก 1 element เลขของผลลัพธ์ 
             # เมื่อครบตามจำนวนความยาวที่ตั้งไว้
             if len(numbers) == length: 
                 if str("".join(numbers)) in self.__idList__: # เช็คค่าว่ามีเลข id ที่สร้างขึ้นมาใหม่ว่าซ้ำกับ id ที่ใช้งานอยู่ไหมถ้าเช็คแล้วว่ามี ให้ล้างค่าใน list แล้ววนใหม่
@@ -903,17 +905,17 @@ class Program(Configuration , Date):
             else: 
                 numbers.append(num)  # เก็บตัวเลขเข้าใน list
                 numbers[0] == '0' and numbers.remove('0') # ไม่เอาเลข 0 นำหน้า
-        newId:str = str("".join(numbers))  # รวม element ใน list ให้เป็นข้อความ
+        newId = str("".join(numbers))  # รวม element ใน list ให้เป็นข้อความ
         return newId
     
     def __generateCode__(self) -> str:
         """ method ในการสร้าง code รหัสสินค้าการสั่งซื้อ """
         chars = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
-        numbers:str = "".join([str(randint(0,9)) for i in range(6)]) # สุ่มตัวเลขได้เป็น string
-        code:str = f'{choice(chars)}{choice(chars)}{choice(chars)}{numbers}' # นำตัวอักษรมารวมกับตัวเลข
+        numbers = "".join([str(randint(0,9)) for i in range(6)]) # สุ่มตัวเลขได้เป็น string
+        code = f'{choice(chars)}{choice(chars)}{choice(chars)}{numbers}' # นำตัวอักษรมารวมกับตัวเลข
         return code
     
-    def __generateBill__(self , code:int , pay:int , total:int , order:List[Dict[str , str | int]] , change:int) -> None:
+    def __generateBill__(self , code: int , pay: int , total: int , order: List[Dict[str , str | int]] , change: int) -> None:
         """ method ในการสร้างและแสดง บิลใบเสร็จ \n
         ต้องมีการรับค่า parameters เข้ามา 5 อันได้แก่ \n
         ``code`` : รหัสอ้างอิงการสั่งซื้อ สร้างมาจากการใช้ method generateCode \n
@@ -1006,7 +1008,7 @@ class Program(Configuration , Date):
                     # นำ group ที่ได้มาใส่ใน panel อีกที
                     card = Panel(contents , title=f'[yellow italic underline]รายละเอียดการสั่งซื้อของรหัส {code}[/]' , 
                         subtitle=f'สั่งซื้ออาหารในวันที่ [blue1 bold]{order["date"]}[/] เวลา [blue1 bold]{order["time"]}[/]',
-                        expand=False , box=HEAVY , padding=(1,2))
+                        expand=False , box=HEAVY , padding=(1,2,1,2))
                     # แสดงรายละเอียดทั้งหมดออกมา
                     console.line()
                     console.print(card)
@@ -1098,11 +1100,11 @@ class Program(Configuration , Date):
                             "order": order # อาหารที่สั่ง (ข้อมูลเป็น list)
                         }) 
                         #* อ่านข้อมูลในไฟล์ order.py จะเก็บรายละเอียดการสั่งซื้อทั้งหมดของโปรแกรม
-                        data:Dict[str , str | int | List[Dict[str , str | int]]] = ReadWrite.read(path='./data/order.py' , initialValue=dict())
+                        data: Dict[str , str | int | List[Dict[str , str | int]]] = ReadWrite.read(path='./data/order.py' , initialValue=dict())
                         #* loop ข้อมูล orders ทั้งหมดที่โปรแกรมทำการเก็บข้อมูลไว้เพื่อนำไปเขียนไฟล์ 
                         for key in self.__allOrdersCode__:
                             if key in data: #? ถ้ามี key(รหัสอ้างอิงการสั่งซื้อ) อยู่ใน ข้อมูลที่ไปทำการอ่านไฟล์มาไม่ต้องเก็บข้อมูลซ้ำไม่ต้องเขียนข้อมูลซ้ำเดิมเพิ่ม 
-                                pass
+                                ...
                             else:
                                 data[key] = self.__allOrdersCode__[key] #? เก็บ รหัสอ้างอิง อันที่พึ่งมีมาใหม่
                         #* เขียนข้อมูลที่ได้มาลงในไฟล์ order.py 
@@ -1126,7 +1128,7 @@ class Program(Configuration , Date):
                 console.print('ไม่มีการสั่งอาหารรายการใดๆ')
     
         #* (function ย่อย) function ในการจัดการจำนวนอาหารในรายการเมนู
-        def management(name:str = '', decrement:int = 0, restore:bool = False) -> None:
+        def management(name: str = '', decrement: int = 0, restore: bool = False) -> None:
             # คืนค่าจำนวนอาหารที่สั่งไป
             if restore:
                 for order in self.__currentOrder__: # loop ข้อมูลใน order ที่สั่งเพื่อคืนจำนวนอาหารที่สั่งให้เมนู
@@ -1323,13 +1325,13 @@ class Program(Configuration , Date):
                 # มีอยู่ขื่อ หรือ id อยู่ในเมนู 
                 elif (product in self.__foodList__ ) or (product in self.__idList__):
                     # หาเลข index ของเมนูอาหาร
-                    idx:int = self.__search__(product)
+                    idx = self.__search__(product)
                     editProduct = {
                             "name": None,
                             "price": None,
                             "id": None
                         }
-                    isEmpty:bool = lambda var: var == '' or len(var) == 0
+                    isEmpty = lambda var: var == '' or len(var) == 0
                     # แสดงข้อความ
                     console.print(f'คุณเลือกรายการสินค้าที่จะแก้ไข คือ [orange1 bold]"{self.__menu__[idx]["name"]}"[/] ราคา [orange1 bold]{self.__menu__[idx]["price"]}[/] บาท รหัสสินค้าคือ [orange1 bold]{self.__menu__[idx]["id"]}[/]')
                     console.print(f'ถ้าไม่ต้องการแก้ไขชื่ออาหารให้ใช้เครื่องหมายลบ [yellow bold](-)[/]')            
@@ -1433,9 +1435,9 @@ class Program(Configuration , Date):
         self.__alert__("เพื่อออกจากการลบเมนู" , None)
         
         #* (function ย่อย) ลบสินค้า
-        def delete(item:str) -> None:
-            findIndex:int = self.__search__(item) # หาสินค้าที่ต้องการลบส่งกลับเป็นเลข index
-            if findIndex is None: # ไม่มีอยู่ในเมนู
+        def delete(item: str) -> None:
+            findIndex = self.__search__(item) # หาสินค้าที่ต้องการลบส่งกลับเป็นเลข index
+            if findIndex == None: # ไม่มีอยู่ในเมนู
                 console.print(f'[red]❌ ไม่พบ [bold]"{item}"[/] อยู่ในเมนูอาหาร[/]')
             else:
                 idx:int = findIndex
@@ -1516,29 +1518,29 @@ class Program(Configuration , Date):
         else: 
             console.print('❗ คุณยกเลิกการดำเนินการลบสินค้าทั้งหมด' , style='magenta')
         
-    def __conclusion__(self , total: List[int] , orders: List[Dict[str , int]]) -> Tuple[str]:
+    def __conclusion__(self , total: List[int] , orders: List[Dict[str , int]]) -> Tuple[str , ...]:
         """ method สรุปจำนวนเงินและการสั่งซื้ออาหารในหนึ่งวัน """
         quantity = 0 # จำนวนอาหารที่สั่งไปทั้งหมด
         #* หาค่าเฉลี่ย
-        me:List[int] = mean(total) 
+        me = mean(total) 
         #* หาฐานนิยมต้องวน loop ข้อมูลแล้วเก็บใน list ก่อนถึงจะหาได้
-        mo:List[str] = [] 
+        mo: List[str] = [] 
         # loop ข้อมูลทั้งหมด จาก allOrders
         for item in orders:
-            foodName:str = item["name"] # เก็บชื่ออาหาร
-            amount:int = item["amount"] # เก็บจำนวนของอาหารที่สั่ง
+            foodName: str = item["name"] # เก็บชื่ออาหาร
+            amount: int = item["amount"] # เก็บจำนวนของอาหารที่สั่ง
             # loop ตามจำนวนครั้ง ของ value ทุกๆครั้งที่ loop จะคืนค่า(เพิ่ม) ชื่ออาหารให้ li
-            li:List[str] = [foodName for i in range(amount)] 
+            li: List[str] = [foodName for i in range(amount)] 
             # เพิ่ม li ให้ mo เพื่อนำไปหาฐานนิยมต่อไป
             mo.extend(li) 
             quantity += amount # บวกจำนวนเพิ่มแต่ละอาหาร
         #* หาฐานนิยมจะ: return ชื่ออาหารที่มีชื่อนั้นมากสุด ถ้าไม่มีชื่ออาหารตัวไหนมากกว่ากันจะคืน element ตัวแรกเสมอ    
-        mo = mode(mo) 
+        newMo = mode(mo) 
         return (
             f'จำนวนสั่งซื้ออาหารวันนี้ {self.__orderNumber__} รายการ {quantity:,} อย่าง ทำจำนวนเงินรวมไปได้ [green]{sum(total):,}[/] บาท ',
             '[yellow underline]สรุป[/]',
             f'มีค่าเฉลี่ยการสั่งซื้ออาหารอยู่ที่ : [yellow bold]{me:,.2f}[/]',
-            f'อาหารที่สั่งบ่อยหรือสั่งเยอะที่สุดในวันนี้คือ : [yellow bold]"{mo}"[/]'
+            f'อาหารที่สั่งบ่อยหรือสั่งเยอะที่สุดในวันนี้คือ : [yellow bold]"{newMo}"[/]'
         )
                 
     def __exitProgram__(self) -> None:
@@ -1561,10 +1563,10 @@ class Program(Configuration , Date):
         while self.__PROGRAMSTATUS__["programeIsRunning"]:
             self.__PROGRAMSTATUS__["isWorking"] = True
             try:
-                command:str = console.input("[medium_turquoise italic]พิมพ์คำสั่งเพื่อดำเนินการต่อไป : [/]").lower().strip()
+                command = console.input("[medium_turquoise italic]พิมพ์คำสั่งเพื่อดำเนินการต่อไป : [/]").lower().strip()
                 #! ตรวจสอบความถูกต้อง
                 # ไม่ได้พิมพิมพ์คำสั่งมา
-                assert not (command == "") , 'คุณไม่ได้ป้อนคำสั่งโปรดพิมพ์คำสั่ง' # ถ้าไม่ได้พิมพ์คำสั่งอะไรมา
+                assert command != "" , 'คุณไม่ได้ป้อนคำสั่งโปรดพิมพ์คำสั่ง' # ถ้าไม่ได้พิมพ์คำสั่งอะไรมา
                 # ไม่ใช้คำสั่ง (True: เป็นคำสั่ง / False: ไม่มีคำสั่งที่ค้นหา)
                 assert self.__isKeyword__(command) , f'ไม่รู้จักคำสั่ง [bold]"{command}"[/] โปรดเลือกใช้คำสั่งที่มีระบุไว้ให้'
                 
@@ -1622,11 +1624,11 @@ class Program(Configuration , Date):
                     if self.__logout__():
                         self.__PROGRAMSTATUS__["isWorking"] = False
                         #* login ใหม่
-                        user:Dict[str , str | Dict[str , bool]] = super().__getUser__() # รอรับข้อมูลผู้ใช้งาน
+                        user: Dict[str , str] = super().__getUser__() # รอรับข้อมูลผู้ใช้งาน
                         super().__setUser__(user)
                         super().__setPermissions__(user)
                         self.showLogo()
-                        self.greeting(userName=self.__user__["name"])
+                        self.greeting(userName=user["name"])
                         self.showCommands()
             except AssertionError as err:
                 console.print(f'[bold underline red on grey0]Error:[/] [red]{err.__str__()}[/]')
@@ -1635,12 +1637,6 @@ class Program(Configuration , Date):
             finally:
                 self.__PROGRAMSTATUS__["isWorking"] and console.print('โปรดเลือกพิมพ์คำสั่ง' , style='cyan italic')
 
-#? อ่านข้อมูลจากไฟล์แล้วมาเก็บไว้ใน property 
-data:Dict[str , List[Dict[str , str | int]]] = { 
-    "menu": ReadWrite.read(path='./data/menu.py'),
-    "user": ReadWrite.read(path='./data/user.py')
-}
-
 #? สร้าง object 
-program = Program(menu=data["menu"] ,  user=data["user"])
+program = Program(menu=ReadWrite.read(path='./data/menu.py') ,  user=ReadWrite.read(path='./data/user.py'))
 program.execute()  
