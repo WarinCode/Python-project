@@ -82,12 +82,5 @@
         'password':
         '$pbkdf2-sha256$29000$/997T4mx1vp/r1WqdW4NwQ$uX9o3MfM6y2sBlK7LGeBv21AWJ7Ti6K.EBTeKTHvc9w',
         'position': 'พนักงานต้อนรับ'
-    },
-    {
-        'name': 'aaa',
-        'password':
-        '$pbkdf2-sha256$29000$/h.jNGZMaa2V0tpbC2FMCQ$x/5woiXcv8hN9.OtXqofCDFW9khbz208EEkkckllSYk',
-        'email': 'aaa@gmail.com',
-        'position': 'พนักงานต้อนรับ'
-    },
+    }
 ]

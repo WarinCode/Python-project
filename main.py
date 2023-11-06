@@ -18,7 +18,7 @@ from rich.panel import Panel
 from rich.progress import track
 # pip install passlib
 from passlib.hash import pbkdf2_sha256
-# $ pip install yapf
+# pip install yapf
 from yapf.yapflib.yapf_api import FormatFile
 
 #* ไฟล์ code project อยู่ที่ github -> https://github.com/VarinCode/Python-project
@@ -328,7 +328,7 @@ class Configuration(Date):
         # function userVerification จะทำการ callback function ให้เรียกใช้ function loginForm ก่อนเมื่อดำเนินการตามคำสั่งเรียบร้อยแล้วจะคืนค่ากลับมา
         # เป็น list แล้วใช้เครื่องหมาย * เพื่อกระจาย elements ที่อยู่ใน list ส่งเป็น arguments เรียงลำดับตาม parameters ที่ประกาศไว้ใน 
         # function userVerification เมื่อส่งค่ารับ parameter แล้วจะนำดำเนินตามคำสั่งที่เขียนใน funciton จนเสร็จสิ้นสุดท้ายแล้วจะคืนค่ากลับมาเป็น 
-        # boolean (True/False) ถ้าได้รับ True มาในความหมายของการทำงานนี้คือ การ login สำเร็จให้ยกเลิกการ วน loop ซ้ำๆ (infinity loop)
+        # boolean (True/False) ถ้าได้รับ True มาในความหมายของการทำงานนี้คือ การ login สำเร็จให้ยกเลิกการ วน loop ซ้ำๆ (infinite loop)
         # แต่ถ้าเป็น False คือ login ไม่สำเร็จจะวน loop ซ้ำๆไปเรื่อยๆจนกว่าจะ login สำเร็จ
         # การใส่ not คือ ทำให้ค่า boolean เปลี่ยนค่าตรงข้ามกัน not True -> False = login สำเร็จเลิกวนซ้ำ
         # not False -> True = login ซ้ำไปเรื่อยๆจนกว่าข้อมูลผู้ใช้งานจะถูกต้อง
@@ -574,6 +574,9 @@ class Configuration(Date):
         # log ลบข้อมูล
         elif typeOfLog == self.DEL:
             txt += f"{userName} ได้ทำการลบสินค้า \"{text}\" ในรายการเมนู"
+        # log ลบข้อมูลทั้งหมด
+        elif typeOfLog == self.DELALL:
+            txt += f"{userName} ได้ทำการลบสินค้าทั้งหมดในรายการเมนู"
         # log แก้ไขข้อมูล
         elif typeOfLog == self.EDIT and item != None:
             txt += f"{userName} ทำการแก้ไขข้อมูลสินค้า \"{item[0]}\" ไปเป็น \"{item[1]}\" ในรายการเมนู"
@@ -801,9 +804,13 @@ class Program(Configuration , Date):
             self.__foodList__.clear()
             self.__idList__.clear()
         else:
-            # เก็บค่า list ที่ได้ให้ 2 ตัวแปร
-            self.__foodList__ = [item["name"] for item in self.__menu__] 
-            self.__idList__ = [str(item["id"]) for item in self.__menu__] # ค่า id เป็นตัวเลขแปลงให้เป็น string เพื่อง่ายต่อการค้นหาและลด error
+            if self.__menu__ == []: # ถ้าในไฟล์ไม่มีข้อมูลอะไรให้เป็น list เปล่า
+                self.__foodList__ = [] 
+                self.__idList__ = [] 
+            else:
+                # เก็บค่า list ที่ได้ให้ 2 ตัวแปร
+                self.__foodList__ = [item["name"] for item in self.__menu__] 
+                self.__idList__ = [str(item["id"]) for item in self.__menu__] # ค่า id เป็นตัวเลขแปลงให้เป็น string เพื่อง่ายต่อการค้นหาและลด error
         
     def __search__(self , param: str , obj: Optional[List[Dict[str , str | int]]] = None) -> Optional[int]:
         """ (method หลัก) ในการค้นหา dictionary ที่อยู่ใน ``foodList`` , ``idList`` (อ่านค่าใน list) ส่งคืนกลับเป็นเลข index หรือ None \n
@@ -814,7 +821,7 @@ class Program(Configuration , Date):
         param: str =  param.strip() # ตัดเว้นว่างออก
         if obj != None: # ไว้ใช้ในการสั่งอาหาร
             # เช็ค object ที่ส่งมาว่ามีค่าอยู่ใน object หรือไม่
-            newObj:List[str] = [item["name"] for item in obj]
+            newObj: List[str] = [item["name"] for item in obj]
             return newObj.index(param) if param in newObj else None
         else: 
             idx: int = 0
@@ -963,7 +970,7 @@ class Program(Configuration , Date):
         #* อ่านข้อมูลมาใหม่ทำให้มีข้อมูลทั้งหมดไปใช้อ้างอิง รหัสอ้างอิงการสั่งซื้อได้
         self.__allOrdersCode__ = ReadWrite.read(path='./data/order.py' , initialValue=dict())
         
-        #* infinity loop จนกว่าจะพิมพ์คำสั่ง "e" หรือ "end" เพื่อออกจาก loop
+        #* infinite loop จนกว่าจะพิมพ์คำสั่ง "e" หรือ "end" เพื่อออกจาก loop
         while self.__PROGRAMSTATUS__["invokeMethod"]:
             try:
                 code = console.input('รหัสอ้างอิงการสั่งซื้อ : ').strip() # รหัสอ่างอิงการสั่งซื้อ
@@ -1032,8 +1039,9 @@ class Program(Configuration , Date):
         def resetOrder(isCancel:bool = False) -> None:
             if isCancel:
                 if isCancel and self.__currentOrder__ == []:
-                    console.print('❕ ยังไม่มีการสั่งเมนูอาหารโปรดสั่งอาหารก่อนยกเลิกรายการที่สั่ง')
+                    console.print('❕ ยังไม่มีการสั่งเมนูอาหารโปรดสั่งอาหารก่อนยกเลิกรายการที่สั่ง' , style='orange1')
                 else:
+                    self.__loading__(text='กำลังยกเลิก order ที่สั่งล่าสุด' , spinner='dots8' , delay=.2) 
                     console.print('✓ ยกเลิกรายการ order ที่ทำการสั่งไปเรียบร้อย' , style='green')
                     # เก็บ log
                     self.__log__(text=f'ลบรายการ order ที่กดสั่งไป หมายเลข order ที่ {self.__orderNumber__ + 1} ')
@@ -1044,8 +1052,9 @@ class Program(Configuration , Date):
         #* (function ย่อย) function ในการแสดง order ที่สั่งไป
         def showOrder() -> None:
             if self.__currentOrder__ == []:
-                console.print('❕ ยังไม่มีการสั่งเมนูอาหารโปรดสั่งอาหารเพื่อทำการแสดงรายการที่สั่ง')
+                console.print('❕ ยังไม่มีการสั่งเมนูอาหารโปรดสั่งอาหารเพื่อทำการแสดงรายการที่สั่ง' , style='orange1')
             else:
+                self.__loading__(text='กำลังแสดงเนื้อหามูล' , spinner='dots8' , delay=.1) 
                 totalAmount = 0
                 money = 0
                 content = ''
@@ -1064,7 +1073,8 @@ class Program(Configuration , Date):
         #* (function ย่อย) เมื่อหยุดการทำงานของ method นี้ให้คำนวณยอดเงินรวม order ที่สั่งไป
         def calculateOrder() -> None:
             # มีการสั่งอาหาร = จำนวนข้อมูลใน list จะไม่เป็น 0
-            if (self.__currentOrder__.__len__() != 0) or (self.__currentOrder__ != []):     
+            if (self.__currentOrder__.__len__() != 0) or (self.__currentOrder__ != []):  
+                self.__loading__(text='กำลังคำนวณรายการสินค้าทั้งหมด' , spinner='dots8')   
                 # loop รายชื่ออาหารที่ทำการสั่งมาทั้งหมด     
                 for i in range(self.__currentOrder__.__len__()):  
                     # ราคาอาหารทั้งหมดของอาหารนั้น = จำนวนสินค้า x กับราคาสินค้าที่อยู่ในเมนู
@@ -1087,7 +1097,7 @@ class Program(Configuration , Date):
                         console.print(f'❌ โปรดใส่แค่ตัวเลขจำนวนเต็มเท่านั้น' , style='red')
                     else:
                         self.__orderCode__ = self.__generateCode__() # สร้างรหัสอ้างอิงการสั่งซื้อ
-                        order:List[Dict[str , str | int]] = self.__currentOrder__.copy() # order ที่สั่งซื้ออาหาร ข้อมูลเป็น list , elements คือ dict
+                        order: List[Dict[str , str | int]] = self.__currentOrder__.copy() # order ที่สั่งซื้ออาหาร ข้อมูลเป็น list , elements คือ dict
                         # เก็บ order
                         self.__allOrders__.extend(order) 
                         #* เก็บหมายเลขอ้างอิง -> key: ชื่อรหัสอ้างอิง , value: เป็น dict
@@ -1133,16 +1143,16 @@ class Program(Configuration , Date):
             # คืนค่าจำนวนอาหารที่สั่งไป
             if restore:
                 for order in self.__currentOrder__: # loop ข้อมูลใน order ที่สั่งเพื่อคืนจำนวนอาหารที่สั่งให้เมนู
-                    idx:int = self.__search__(order["name"])
+                    idx: int = self.__search__(order["name"])
                     # คืนค่าจำนวนอาหารที่สั่งไป
                     self.__menu__[idx]["remain"] += order["amount"]
             else:
                 # หาเลข index เพื่ออ้างอิงตำแหน่ง elements ใน list 
-                idx:int = self.__search__(name)
+                idx: int = self.__search__(name)
                 # ลดจำนวนอาหารตามจำนวนที่สั่งไป
                 self.__menu__[idx]["remain"] -= decrement
                     
-        #* infinity loop จนกว่าจะพิมพ์คำสั่ง "e" หรือ "end" เพื่อออกจาก loop
+        #* infinite loop จนกว่าจะพิมพ์คำสั่ง "e" หรือ "end" เพื่อออกจาก loop
         while self.__PROGRAMSTATUS__["invokeMethod"]:
             try:
                 product = console.input("ชื่ออาหารหรือรหัสสินค้า : ").lower().strip()
@@ -1151,7 +1161,6 @@ class Program(Configuration , Date):
                     self.showMenu()
                 # ออกจาการทำงานของ method
                 elif product == "e" or product == "end":
-                    self.__loading__(text='กำลังคำนวณรายการสินค้าทั้งหมด' , spinner='dots8')
                     # ! เมื่อหยุดการทำงานของ function __foodOrdering__ ให้เรียกใช้ method คำนวณสินค้า
                     calculateOrder()
                     self.__PROGRAMSTATUS__["invokeMethod"] = False
@@ -1180,7 +1189,7 @@ class Program(Configuration , Date):
                         else:
                             # หาเลข index โดยใช้ชื่อหรือรหัสสินค้าที่ป้อนเข้ามา
                             # เลข index ไว้อ้างอิง elements(dict) ใน list เพื่อนำข้อมูลเมนูไปใช้งาน
-                            idx = self.__search__(product) 
+                            idx: int = self.__search__(product) 
                             #* ถ้าใส่ชื่อเป็นรหัสสินค้าให้แปลงรหัสสินค้าเป็นชื่ออาหาร
                             if product in self.__idList__: 
                                 product = self.__menu__[idx]["name"]
@@ -1210,7 +1219,7 @@ class Program(Configuration , Date):
                             #* ถ้ามีชื่ออยู่ใน list ให้เพิ่มจำนวนอาหาร ... เพิ่มขึ้น   
                             elif product in self.__shoppingList__: 
                                 # หาเลข index ใน list ข้างใน elements คือ dict ต้องการตรวจสอบชื่อ ... ว่าอยู่ index ที่ ... ใน list เพื่อนำมาใช้อ้างอิง
-                                idx = self.__search__(param=product , obj=self.__currentOrder__)
+                                idx: int = self.__search__(param=product , obj=self.__currentOrder__)
                                 #! ก่อนเพิ่มจำนวนอาหารที่เคยสั่งไปแล้วให้ลองเช็คจำนวน อาหารที่เคยสั่งจะมีจำนวนอาหารอยู่ รวม กับจำนวนที่พึ่งสั่ง ถ้าเกินจำนวนอาหารค่ามากสุดที่ตั้งไว้ให้ raise
                                 if (self.__currentOrder__[idx]["amount"] + amount) > self.__AMOUNT__:
                                     raise Exception(f'❌ จำนวนอาหารที่สั่งต้องไม่เกิน {self.__AMOUNT__} อย่างต่อเมนู!')
@@ -1234,7 +1243,7 @@ class Program(Configuration , Date):
         # แสดงแจ้งเตือน
         self.__alert__('เพื่อออกจาการเพิ่มสินค้า' , None)
         
-        #* infinity loop จนกว่าจะพิมพ์คำสั่ง "e" หรือ "end" เพื่อออกจาก loop
+        #* infinite loop จนกว่าจะพิมพ์คำสั่ง "e" หรือ "end" เพื่อออกจาก loop
         while self.__PROGRAMSTATUS__["invokeMethod"]:
             try:
                 newProduct = console.input('ชื่ออาหารใหม่ : ').strip()
@@ -1254,15 +1263,21 @@ class Program(Configuration , Date):
                     # ห้ามเกินความยาวในการตั้งชื่ออาหารที่กำหนด
                     elif len(newProduct) >= self.__MAX_LENGTH__: 
                         raise Exception(f'❌ ไม่สามารถตั้งชื่ออาหารที่มีความยาวเกิน {self.__MAX_LENGTH__} ตัวอักษรได้')
+                    # ห้ามตั้งชื่อสั้นเกินไป
                     elif len(newProduct) < self.__MIN_LENGTH__:
                         raise Exception(f'❌ ไม่สามารถตั้งชื่ออาหารที่มีความยาวสั้นน้อยกว่า {self.__MIN_LENGTH__} ตัวอักษรได้')
                     # ห้ามตั้งชื่ออาหารขึ้นต้นเป็นตัวเลขหรือตั้งชื่อเป็นตัวเลข
                     elif newProduct.isdigit() or newProduct[0].isdigit():
                         raise Exception(f'❌ ไม่สามารถตั้งชื่ออาหารที่เป็นตัวเลขขึ้นต้นได้')
+                    # ห้ามตั้งชื่อเป็นข้อความว่างเปล่า
                     elif newProduct == "":
                         raise Exception(f'❌ ไม่สามารถตั้งชื่ออาหารเป็นค่าว่างเปล่าได้')
+                    # ห้ามตั้งชื่อซ้ำกับชื่ออาหารที่มีอยู่ในเมนู
                     elif newProduct in self.__foodList__:
                         raise Exception(f'❌ ไม่สามารถใช้ชื่อ "{newProduct}" ในการตั้งเมนูใหม่ได้เนื่องจากมีชื่อที่ซ้ำอยู่ในเมนูอาหารโปรดตั้งชื่อใหม่!')
+                    # ห้ามตั้งชื่อเป็นคำสั่ง
+                    elif self.__isKeyword__(newProduct):
+                        raise Exception(f'❌ ไม่สามารถใช้ชื่อ "{newProduct}" ในการตั้งเมนูใหม่ได้เนื่องจากเป็นชื่อคำสั่งของโปรแกรม')
                     # ตรวจแล้วไม่มีเงื่อนไข error ใดๆให้ดำเนินการต่อ
                     else:
                         self.__PROGRAMSTATUS__["isContinue"] = True # set ค่าสถานะให้ดำเนินการต่อ
@@ -1308,7 +1323,7 @@ class Program(Configuration , Date):
         # แสดงแจ้งเตือน
         self.__alert__("เพิ่อออกจาการแก้ไข" , None)
         
-        #* infinity loop จนกว่าจะพิมพ์คำสั่ง "e" หรือ "end" เพื่อออกจาก loop
+        #* infinite loop จนกว่าจะพิมพ์คำสั่ง "e" หรือ "end" เพื่อออกจาก loop
         while self.__PROGRAMSTATUS__["invokeMethod"]:
             try:
                 self.__PROGRAMSTATUS__["isError"] = False # set ค่าสถานะ
@@ -1326,7 +1341,7 @@ class Program(Configuration , Date):
                 # มีอยู่ขื่อ หรือ id อยู่ในเมนู 
                 elif (product in self.__foodList__ ) or (product in self.__idList__):
                     # หาเลข index ของเมนูอาหาร
-                    idx = self.__search__(product)
+                    idx: int = self.__search__(product)
                     editProduct = {
                             "name": None,
                             "price": None,
@@ -1349,10 +1364,21 @@ class Program(Configuration , Date):
                             # ไม่ใส่ชื่อ
                             elif isEmpty(changeFoodName):
                                 raise Exception('❌ ไม่สามารถใส่ชื่อว่างเปล่าได้!')
+                            # ห้ามตั้งชื่อเป็นตัวเลข
                             elif changeFoodName.isdigit() or changeFoodName[0].isdigit():
                                 raise Exception('❌ ไม่สามารถตั้งชื่อขึ้นต้นด้วยตัวเลขได้หรือตั้งชื่อเป็นตัวเลขได้!')
+                            # ห้ามแก้ไขเป็นชื่อเดิม
                             elif changeFoodName == self.__menu__[idx]["name"]:
                                 raise Exception('❌ ไม่สามารถแก้ไขชื่ออาหารที่ชื่อเหมือนเดิมได้!')
+                            # ห้ามแก้ไขชื่อเป็นคำสั่ง
+                            elif self.__isKeyword__(changeFoodName):
+                                raise Exception(f'❌ ไม่สามารถใช้ชื่อ "{changeFoodName}" ในการแก้ไขชื่อได้เนื่องจากเป็นชื่อคำสั่งของโปรแกรม')
+                            # ห้ามเกินความยาวในการตั้งชื่ออาหารที่กำหนด
+                            elif len(changeFoodName) >= self.__MAX_LENGTH__: 
+                                raise Exception(f'❌ ไม่สามารถตั้งชื่ออาหารที่มีความยาวเกิน {self.__MAX_LENGTH__} ตัวอักษรได้')
+                            # ห้ามตั้งชื่อสั้นเกินไป
+                            elif len(changeFoodName) < self.__MIN_LENGTH__:
+                                raise Exception(f'❌ ไม่สามารถตั้งชื่ออาหารที่มีความยาวสั้นน้อยกว่า {self.__MIN_LENGTH__} ตัวอักษรได้')
                         except Exception as err:
                             console.print(err.__str__() , style='red')
                         else:
@@ -1367,8 +1393,10 @@ class Program(Configuration , Date):
                         try:
                             # ราคาที่จะแก้ไขใหม่
                             changePrice = console.input(f'แก้ไขราคา จาก [orange1 bold]{self.__menu__[idx]["price"]}[/] บาท เป็น --> ').strip()
+                            # ใช้ราคาเดิม
                             if changePrice == '-':
                                 changePrice = self.__menu__[idx]["price"]
+                            # ไม่ใส่จำนวนราคา
                             elif isEmpty(changePrice):
                                 raise Exception('❌ ไม่สามารถใส่ค่าว่างเปล่าได้!')
                             else:
@@ -1376,6 +1404,7 @@ class Program(Configuration , Date):
                                 # ยอดเงินต้องไม่เกิน 1000 บาท และ ต้องไม่ติดลบและไม่เป็นศูนย์
                                 if (changePrice > self.__MAX__ or changePrice < self.__MIN__) or (changePrice not in range(self.__MIN__ , self.__MAX__)): 
                                     raise Exception('❌ ราคาสินค้าต้องตั้งอยู่ในราคาไม่เกิน 1,000 บาทเท่านั้น!')
+                                # แก้ไขเป็นราคาเดิม
                                 elif changePrice == self.__menu__[idx]["price"]:
                                     raise Exception('❌ ไม่สามารถแก้ไขราคาสินค้าที่ราคาเหมือนเดิมได้!')
                         except ValueError:
@@ -1394,18 +1423,23 @@ class Program(Configuration , Date):
                         try:
                             # เลข id ที่จะแก้ไข
                             changeId = console.input(f'แก้ไขรหัสสินค้า จากรหัส [orange1 bold]"{self.__menu__[idx]["id"]}"[/] เป็น --> ').strip() 
+                            # ใช้รหัสเดิม
                             if changeId == '-':
                                 changeId = self.__menu__[idx]["id"]
+                            # ใช้รหัสใหม่แต่ตั้งรหัสให้
                             elif changeId == '/':
                                 changeId = self.__createId__(length=self.__PRODUCTCODE_LENGTH__)
+                            # ไม่ใส่รหัส
                             elif isEmpty(changeId):
                                 raise Exception('❌ ไม่สามารถใส่ค่าว่างเปล่าได้!')
                             # ชื่อห้ามซ้ำกับรายการอื่นๆ
                             elif changeId in self.__idList__:
                                 raise Exception('❌ รหัสสินค้าที่คุณทำการแก้ไขนั้นเป็นรหัสสินค้าซ้ำอยู่ในเมนูอาหารโปรดแก้ไขไม่ให้ซ้ำกัน')
                             else:
+                                # ความยาวของรหัสสินค้าต้องเท่ากับความยาวที่ตั้งไว้
                                 if changeId.__len__() != self.__PRODUCTCODE_LENGTH__:
                                     raise Exception(f'❌ ต้องตั้งรหัสสินค้าในความยาว {self.__PRODUCTCODE_LENGTH__} เท่านั้น!')
+                                # ใส่รหัสเดิม
                                 elif changeId == self.__menu__[idx]["id"]:
                                     raise Exception('❌ ไม่สามารถแก้ไขราคารหัสสินค้าที่รหัสเหมือนเดิมได้!')
                         except Exception as err:
@@ -1441,7 +1475,7 @@ class Program(Configuration , Date):
             if findIndex == None: # ไม่มีอยู่ในเมนู
                 console.print(f'[red]❌ ไม่พบ [bold]"{item}"[/] อยู่ในเมนูอาหาร[/]')
             else:
-                idx:int = findIndex
+                idx: int = findIndex
                 self.__loading__(text='กำลังลบข้อมูล' , delay=.1 , spinner='dots8')
                 self.__log__(typeOfLog=self.DEL , text=self.__menu__[idx]["name"]) # เก็บ log
                 #* ลบสินค้า่โดยอ้างอิงเลข index
@@ -1451,7 +1485,7 @@ class Program(Configuration , Date):
                 console.print(f'[green]✓ ลบ "{item}" ในรายการเมนูอาหารเสร็จสิ้น[/]')
                 self.__PROGRAMSTATUS__["isDeleted"] = True
                 
-        #* infinity loop จนกว่าจะพิมพ์คำสั่ง "e" หรือ "end" เพื่อออกจาก loop
+        #* infinite loop จนกว่าจะพิมพ์คำสั่ง "e" หรือ "end" เพื่อออกจาก loop
         while self.__PROGRAMSTATUS__["invokeMethod"]:
             self.__PROGRAMSTATUS__["isDeleted"] = False
             try:
@@ -1486,8 +1520,8 @@ class Program(Configuration , Date):
                             console.print('คุณยกเลิกการลบ' , style='dark_orange')
                     #* เมื่อมีข้อมูลอยู่ในเมนูให้ลบออก
                     elif (product in self.__foodList__) or (product in self.__idList__): 
-                        idx:int = self.__search__(product)
-                        foodName:str = self.__menu__[idx]["name"]
+                        idx: int = self.__search__(product)
+                        foodName: str = self.__menu__[idx]["name"]
                         if console.input(f'[dark_orange]คุณแน่ใจว่าต้องการลบ [bold]"{foodName}"[/] ออกจากรายการเมนูอาหารของร้านอาหาร [deep_pink1](y/n)[/] : [/]').lower().strip() == "y":
                             delete(foodName)
                         else:
@@ -1511,7 +1545,7 @@ class Program(Configuration , Date):
         if console.input('[orange_red1]คุณแน่ใจว่าต้องการลบสินค้าทั้งหมดถ้าต้องการให้พิมพ์ [bold]"y"[/] แต่โปรดรู้ไว้ข้อมูลสินค้าจะถูกลบถาวรและไม่สามารถกู้คืนได้[/] [deep_pink1](y/n)[/] : ').lower().strip() == "y":
             self.__log__(typeOfLog=self.DELALL)
             # loading 
-            self.__loading__(text='กำลังตรวจสอบข้อมูลเมนู' , spinner='bouncingBall')
+            self.__loading__(text='กำลังตรวจสอบข้อมูลเมนูที่จะลบทั้งหมด' , spinner='bouncingBall')
             self.__loading__(isDelete=True)
             # ลบข้อมูลเมนูทั้งหมด
             self.__menu__.clear()
@@ -1560,7 +1594,7 @@ class Program(Configuration , Date):
 
     def execute(self) -> None:
         """ ``(method หลัก)`` การดำเนินการทำงานหลักของโปรแกรม เป็นคำสั่งที่ใช้ในการรันโปรแกรม """
-        #* infinity loop จนกว่าจะพิมพ์คำสั่ง "e" หรือ "exit" เพื่อออกจาก loop
+        #* infinite loop จนกว่าจะพิมพ์คำสั่ง "e" หรือ "exit" เพื่อออกจาก loop
         while self.__PROGRAMSTATUS__["programeIsRunning"]:
             self.__PROGRAMSTATUS__["isWorking"] = True
             try:
@@ -1625,7 +1659,7 @@ class Program(Configuration , Date):
                     if self.__logout__():
                         self.__PROGRAMSTATUS__["isWorking"] = False
                         #* login ใหม่
-                        user: Dict[str , str] = super().__getUser__() # รอรับข้อมูลผู้ใช้งาน
+                        user: Dict[str , str] = super().__getUser__()
                         super().__setUser__(user)
                         super().__setPermissions__(user)
                         self.showLogo()
@@ -1638,6 +1672,12 @@ class Program(Configuration , Date):
             finally:
                 self.__PROGRAMSTATUS__["isWorking"] and console.print('โปรดเลือกพิมพ์คำสั่ง' , style='cyan italic')
 
-#? สร้าง object 
-program = Program(menu=ReadWrite.read(path='./data/menu.py') ,  user=ReadWrite.read(path='./data/user.py'))
+#? อ่านข้อมูลจากไฟล์แล้วมาเก็บไว้ใน property 
+data = {
+    "menu": ReadWrite.read(path='./data/menu.py' , initialValue=[]),
+    "user": ReadWrite.read(path='./data/user.py' , initialValue=[])
+}
+
+#? สร้าง instance(object)
+program = Program(menu=data["menu"] ,  user=data["user"])
 program.execute()  
