@@ -1672,7 +1672,7 @@ class Program(Configuration , Date):
             finally:
                 self.__PROGRAMSTATUS__["isWorking"] and console.print('โปรดเลือกพิมพ์คำสั่ง' , style='cyan italic')
 
-#? อ่านข้อมูลจากไฟล์แล้วมาเก็บไว้ใน property 
+#? อ่านข้อมูลจากไฟล์แล้วมาเก็บไว้ใน dict 
 data = {
     "menu": ReadWrite.read(path='./data/menu.py' , initialValue=[]),
     "user": ReadWrite.read(path='./data/user.py' , initialValue=[])
