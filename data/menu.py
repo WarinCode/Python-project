@@ -33,7 +33,7 @@
         'name': 'สเต็กเนื้อ',
         'price': 110,
         'id': 169,
-        'remain': 24
+        'remain': 30
     },
     {
         'name': 'พิซซ่า',
@@ -69,24 +69,24 @@
         'name': 'ผัดไทยกุ้งสด',
         'price': 70,
         'id': 397,
-        'remain': 0
+        'remain': 30
     },
     {
         'name': 'ปลาเผา',
         'price': 90,
         'id': 399,
-        'remain': 29
+        'remain': 30
     },
     {
         'name': 'ซี่โครงบาร์บีคิว',
         'price': 110,
         'id': 127,
-        'remain': 0
+        'remain': 30
     },
     {
         'name': 'พาสต้าคาโบนาร่า',
         'price': 75,
         'id': 847,
-        'remain': 0
+        'remain': 30
     },
 ]
