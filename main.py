@@ -269,7 +269,7 @@ class Configuration(Date):
             while not bool(userLogin["password"]):
                 try:
                     # ถ้าส่งค่า argument ไปให้ password=True จะสามารถซ่อนการแสดงข้อความที่เป็นรหัสผ่านได้
-                    password = console.input("รหัสผ่าน : " , password=True).strip()
+                    password = console.input("รหัสผ่าน : " , password=False).strip()
                     if isEmpty(password):
                         raise Exception('❌ รหัสผ่านผู้ใช้งานไม่ถูกต้องโปรดลองใหม่อีกครั้ง')
                     else:
@@ -765,7 +765,6 @@ class Program(Configuration , Date):
         #* ส่งค่า parameter ไปให้ใน superclass
         super().__init__(usersData=user) 
         self.__log__(text="โปรแกรมเริ่มต้นทำงาน") # เก็บ log
-        #* login และ ตั้งค่าสิทธิ์การใช้งานก่อน
         _user: Dict[str , str] = super().__getUser__() # login เสร็จจะได้ข้อมูล user
         #* ตั้งค่าข้อมูลผู้ใช้งานในโปรแกรม
         super().__setUser__(_user) 
@@ -781,7 +780,7 @@ class Program(Configuration , Date):
         self.greeting(userName=_user["name"]) # ทักทายผู้ใช้งาน
         self.showCommands() # แสดงคำสั่ง
         #* เติมจำนวนสินค้าให้ครบตอนเริ่มโปรแกรม
-        self.__addResources__(auto=True) 
+        self.__addResources__(auto=False) 
         
     def __addResources__(self , auto: bool = True) -> None:
         """ method ในการเพิ่มจำนวนอาหารหรือจำนวนสินค้าอัติโนมัติ \n
