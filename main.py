@@ -3,46 +3,17 @@ from datetime import datetime as dt , _Time
 from time import sleep
 from random import randint , random , choice
 from math import floor
-# from data.data import Menu , Users
-# pip install typing
 from typing import List , Dict , Any , Tuple , Optional
-# pip install ascii-magic
 from ascii_magic import AsciiArt 
 from statistics import mean , mode
 from sys import exit
-# pip install rich
 from rich.console import Console , Group
 from rich.table import Table
 from rich.box import HEAVY , HEAVY_EDGE , MINIMAL , SIMPLE , SQUARE
 from rich.panel import Panel
 from rich.progress import track
-# pip install passlib
 from passlib.hash import pbkdf2_sha256
-# $ pip install yapf
 from yapf.yapflib.yapf_api import FormatFile
-
-#* ไฟล์ code project อยู่ที่ github -> https://github.com/VarinCode/Python-project
-#* โดย code จะมี 2 branches ได้แก่:
-#* branch main คือ branch หลักของ code เขียนด้วยรูปแบบ oop พัฒนาอยู่ในปัจจุบัน โปรแกรมมีฟีเจอร์ต่างๆพร้อมให้ใช้งาน 
-#* branch prototype code รุ่นแรกที่ถูกพัฒนา สามารถใช้งานฟีเจอร์หลักได้ แต่ยังมีคง มี bug อยู่
-
-#* เอกสารประกอบการใช้งาน API: 
-# https://rich.readthedocs.io
-# https://pypi.org/project/ascii-magic
-# https://github.com/Textualize/rich
-# https://en.wikipedia.org/wiki/BBCode
-# https://passlib.readthedocs.io/en/stable/#hosting
-# https://github.com/google/yapf
-# https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html
-
-# |ขั้นตอนการใช้งาน|                 |คำสั่ง|
-# ดาวโหลด์:                        git clone https://github.com/VarinCode/Python-project.git
-# เข้าถึง directory ของ project:     cd Python-project
-# ติดตั้ง virtual environment:       py -m venv .venv
-# เปิดใช้งาน venv:                  .venv\Scripts\activate
-# ติดตั้ง library ที่อยู่ใน project:     pip install -r requirements.txt
-# คำสั่งรันโปรแกรม:                   py main.py หรือ py "C:\Users\ชื่อผู้ใช้งานคอมพิวเตอร์\Desktop\Python-project\main.py"
-# ปิดใช้งาน venv:                   deactivate
 
 console: Console = Console()
 
