@@ -1614,4 +1614,4 @@ class Program(Configuration , Date):
 
 #? สร้าง object 
 program: Program = Program(menu=ReadWrite.read(path='./data/menu.py') , user=ReadWrite.read(path='./data/user.py'))
-program.execute()  
+program.execute()
