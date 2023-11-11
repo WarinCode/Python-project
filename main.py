@@ -21,11 +21,11 @@ from passlib.hash import pbkdf2_sha256
 # pip install yapf
 from yapf.yapflib.yapf_api import FormatFile
 
-#* ไฟล์ code project อยู่ที่ github -> https://github.com/VarinCode/Python-project
-#* โดย code จะมี 3 branches ได้แก่:
-#* main branch : เป็น branch หลักของ code เขียนด้วยรูปแบบ oop พัฒนาอยู่ในปัจจุบัน โปรแกรมมีฟีเจอร์ต่างๆพร้อมให้ใช้งาน 
-#* prototype branch: code รุ่นแรกที่ถูกพัฒนา สามารถใช้งานฟีเจอร์หลักได้ แต่ยังมีคง มี bug อยู่
-#* type-hints branch: เหมือน code ของ main branch ทุกอย่างแต่จะเขียน type เพิ่ม
+#* ไฟล์ code ทั้งหมดของ project อยู่ที่ github -> https://github.com/VarinCode/Python-project
+#* โดยแบ่งได้เป็น 3 branches ได้แก่:
+#* main branch : เป็น branch หลักของโปรเจค เขียนด้วยรูปแบบ oop พัฒนาอยู่ในปัจจุบัน โปรแกรมมีฟีเจอร์ต่างๆพร้อมให้ใช้งาน
+#* prototype branch : code รุ่นแรกที่ถูกพัฒนาภายในไม่กี่วันเป็นแค่การทดลองและทดสอบฟีเจอร์ที่ต้องมีและจะนำมาใช้ภายในโปรเจค สามารถใช้งานฟีเจอร์หลักๆได้ แต่ยังคงมี bug
+#* type branch : เหมือน code ของ main branch ทุกอย่างแต่จะเขียน type เพิ่มใน ตัวแปร , object , parameters และ methods
 
 #* เอกสารประกอบการใช้งาน API: 
 # https://rich.readthedocs.io
@@ -1679,4 +1679,4 @@ data = {
 
 #? สร้าง instance(object)
 program = Program(menu=data["menu"] ,  user=data["user"])
-program.execute()  
+program.execute()
