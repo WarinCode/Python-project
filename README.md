@@ -17,6 +17,8 @@
 <h1 align="center">โปรแกรมร้านอาหารขายอาหาร</h1>
 <p align="center">โปรแกรมขายอาหารจัดการอาหารหรือสินค้าภายในโปรแกรมใช้งานโปรแกรมผ่าน command line โดยให้พิมพ์คำสั่งตามที่กำหนดไว้ในโปรแกรม</p>
 
+[![wakatime](https://wakatime.com/badge/user/68e3e2dc-451c-45ef-bca8-9fc3ad60e2f9/project/018bbe78-641e-44df-a80b-173faa3d7148.svg)](https://wakatime.com/badge/user/68e3e2dc-451c-45ef-bca8-9fc3ad60e2f9/project/018bbe78-641e-44df-a80b-173faa3d7148)
+
 <h2>ฟีเจอร์ของโปรแกรม</h2>
 <ul>
   <li>เพิ่มสินค้า</li>
