@@ -1679,4 +1679,4 @@ data = {
 
 #? สร้าง instance(object)
 program = Program(menu=data["menu"] ,  user=data["user"])
-program.execute()
+program.execute()  
