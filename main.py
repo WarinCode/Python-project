@@ -23,9 +23,9 @@ from yapf.yapflib.yapf_api import FormatFile
 
 #* ไฟล์ code project อยู่ที่ github -> https://github.com/VarinCode/Python-project
 #* โดย code จะมี 3 branches ได้แก่:
-#* main : เป็น branch หลักของ code เขียนด้วยรูปแบบ oop พัฒนาอยู่ในปัจจุบัน โปรแกรมมีฟีเจอร์ต่างๆพร้อมให้ใช้งาน 
-#* prototype : code รุ่นแรกที่ถูกพัฒนา สามารถใช้งานฟีเจอร์หลักได้ แต่ยังมีคง มี bug อยู่
-#* type-hints : เหมือน code ของ branch main ทุกอย่างแต่จะเขียน type เพิ่ม
+#* main branch : เป็น branch หลักของ code เขียนด้วยรูปแบบ oop พัฒนาอยู่ในปัจจุบัน โปรแกรมมีฟีเจอร์ต่างๆพร้อมให้ใช้งาน 
+#* prototype branch: code รุ่นแรกที่ถูกพัฒนา สามารถใช้งานฟีเจอร์หลักได้ แต่ยังมีคง มี bug อยู่
+#* type-hints branch: เหมือน code ของ main branch ทุกอย่างแต่จะเขียน type เพิ่ม
 
 #* เอกสารประกอบการใช้งาน API: 
 # https://rich.readthedocs.io
